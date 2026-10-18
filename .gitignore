@@ -1,0 +1,46 @@
+# Data files (too large for git)
+data/
+*.h5ad
+
+# Output directories
+ccc_output/
+
+# Stray/temporary files
+nul
+=1.0.0
+
+# PDF files
+*.pdf
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+.venv/
+
+# VIPlight environments (contain symlinks that don't work on Windows)
+**/VIPlight/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

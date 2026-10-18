@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(xargs:*)",
+      "Bash(ls:*)",
+      "Bash(conda:*)",
+      "Bash(bash:*)",
+      "Bash(wsl:*)",
+      "Bash(/\\\\\\\\\\\\\\\\)",
+      "Bash(python test_ccc_backend.py:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(pip show:*)",
+      "Bash(pip index:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)"
+    ]
+  }
+}
