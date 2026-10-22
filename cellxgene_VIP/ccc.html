@@ -1,0 +1,152 @@
+<!-- CCC tab content. Loaded by ccc.js into the VIP panel; see CHANGES_FROM_UPSTREAM.md -->
+<div id="CCC" class="tabcontent">
+  <h3>Cell-Cell Communication Analysis</h3>
+  <div id="CCCinput">
+    <!-- Mode Toggle -->
+    <p><b>Mode:</b>
+      <label style="margin-left:10px;"><input type="radio" name="CCCmode" value="targeted" checked/> Targeted</label>
+      <label style="margin-left:10px;"><input type="radio" name="CCCmode" value="untargeted"/> Untargeted</label>
+      <small style="color:#666; margin-left:10px;">(Targeted: specific sender→receiver | Untargeted: all interactions)</small>
+    </p>
+
+    <!-- Cells to Include -->
+    <p id="CCCcellsRow"><b>Cells to include:</b>
+      <select id="CCCcells" style="min-width:150px;">
+        <option value="all">All cells</option>
+        <option value="celllist1">Selection 1 (<span class="cellN1">0</span>)</option>
+        <option value="celllist2">Selection 2 (<span class="cellN2">0</span>)</option>
+      </select>
+    </p>
+
+    <!-- Cell Type Annotation (groupby) -->
+    <p id="CCCgroupbyRow"><b>Cell type annotation:</b>
+      <select id="CCCgroupby" onchange="CCCupdateSenderReceiver()"></select>
+    </p>
+
+    <!-- Sender/Receiver (shown only in targeted mode) -->
+    <div id="CCCtargetedOptions">
+      <p><b>Define sender/receiver by:</b>
+        <label style="margin-left:10px;"><input type="radio" name="CCCsrcSource" value="annotation" checked/> Cell type annotation</label>
+        <label style="margin-left:10px;"><input type="radio" name="CCCsrcSource" value="lasso"/> Lasso selections</label>
+      </p>
+      <div id="CCCannotationSR">
+        <p><b>Sender:</b>
+          <select id="CCCsender" style="min-width:150px;"></select>
+          <button type="button" onclick="CCCswapSR()" title="Swap sender and receiver">&#8645; Swap</button>
+        </p>
+        <p><b>Receiver:</b>
+          <select id="CCCreceiver" style="min-width:150px;"></select>
+        </p>
+      </div>
+      <div id="CCClassoSR" style="display:none;">
+        <p style="color:#666;"><small>Lasso cells on the plot, then click "Use current lasso" for the sender; lasso again and do the same for the receiver. Cells outside both selections are not used.</small></p>
+        <p><b>Sender (ligand):</b> <span id="CCClassoSender"></span>
+          <button type="button" onclick="CCCsetFromLasso(0)">Use current lasso</button>
+          <button type="button" onclick="CCCswapSR()" title="Swap sender and receiver">&#8645; Swap</button>
+        </p>
+        <p><b>Receiver (receptor):</b> <span id="CCClassoReceiver"></span>
+          <button type="button" onclick="CCCsetFromLasso(1)">Use current lasso</button>
+        </p>
+      </div>
+      <p><b>Direction:</b>
+        <label style="margin-left:10px;"><input type="radio" name="CCCdirection" value="one_way" checked/> One-way (sender→receiver)</label>
+        <label style="margin-left:10px;"><input type="radio" name="CCCdirection" value="both_ways"/> Both ways</label>
+      </p>
+    </div>
+
+    <!-- Compare two conditions (optional) -->
+    <p><b>Compare conditions by:</b>
+      <select id="CCCcompareBy" onchange="CCCupdateCompare()">
+        <option value="">None (single condition)</option>
+      </select>
+    </p>
+    <div id="CCCcompareOptions" style="margin-left:20px; display:none;">
+      <p><b>Reference:</b> <select id="CCCref" onchange="CCCupdatePreview()"></select>
+        <b style="margin-left:10px;">Test:</b> <select id="CCCtest" onchange="CCCupdatePreview()"></select>
+      </p>
+      <p><b>Replicate (sample / mouse) column:</b>
+        <select id="CCCsample" onchange="CCCupdatePreview()">
+          <option value="">None: pool cells (descriptive only)</option>
+        </select>
+      </p>
+      <p><b>Expression layer:</b>
+        <select id="CCClayer" onchange="CCCshowLayerStatus()">
+          <option value="auto">Auto (first log-normalized layer)</option>
+        </select>
+        <span id="CCClayerStatus" style="margin-left:6px; font-size:12px;"></span>
+      </p>
+      <div id="CCCpreview" style="font-size:12px; margin:6px 0;"></div>
+      <p style="color:#666; font-size:12px;">This view plots absolute values (fraction of cells expressing, mean expression)
+        averaged across replicates, not LIANA's ranks. CCC method, permutations and sort order don't apply.</p>
+    </div>
+
+    <!-- Top N Results -->
+    <p><b>Top N results:</b>
+      <input type="range" id="CCCtopN" min="10" max="100" step="10" value="20" style="width:150px;" oninput="$('#CCCtopNval').text(this.value)"/>
+      <span id="CCCtopNval">20</span>
+    </p>
+
+    <!-- Advanced Options (collapsed by default) -->
+    <details id="CCCadvanced" style="margin-top:10px; border:1px solid #ddd; padding:5px;">
+      <summary style="cursor:pointer; font-weight:bold;">Advanced Options</summary>
+      <div style="margin-top:10px; padding-left:10px;">
+        <p><b>CCC Method:</b>
+          <select id="CCCmethod">
+            <option value="rank_aggregate" selected>Rank Aggregate (consensus of methods)</option>
+            <option value="cellphonedb">CellPhoneDB</option>
+            <option value="natmi">NATMI</option>
+            <option value="connectome">Connectome</option>
+            <option value="logfc">Log2FC</option>
+            <option value="sca">SingleCellSignalR</option>
+          </select>
+        </p>
+        <p><b>Resource (L-R database):</b>
+          <select id="CCCresource">
+            <option value="auto" selected>Auto (detect mouse/human)</option>
+            <option value="mouseconsensus">Mouse Consensus</option>
+            <option value="consensus">Consensus (human)</option>
+            <option value="cellphonedb">CellPhoneDB (human)</option>
+            <option value="cellchatdb">CellChatDB (human)</option>
+            <option value="connectomedb">ConnectomeDB (human)</option>
+          </select>
+        </p>
+        <p><b>Min cells per group:</b>
+          <input type="number" id="CCCminCells" value="20" min="5" max="100" style="width:60px;"/>
+        </p>
+        <p><b>Min cells per replicate (comparison):</b>
+          <input type="number" id="CCCminCellsSample" value="30" min="5" max="500" style="width:60px;" onchange="CCCupdatePreview()"/>
+          <small style="color:#666;">a mouse counts only with this many cells of both sender and target</small>
+        </p>
+        <p><b>Permutations:</b>
+          <input type="number" id="CCCnPerms" value="1000" min="100" max="10000" step="100" style="width:80px;"/>
+        </p>
+        <p><b>Sort results by:</b>
+          <select id="CCCsortBy">
+            <option value="magnitude" selected>Magnitude</option>
+            <option value="specificity">Specificity</option>
+            <option value="pvalue">P-value</option>
+          </select>
+        </p>
+      </div>
+    </details>
+  </div>
+
+  <div style="margin-top:15px;">
+    <button class="CCCbt" onclick="CCCrun()"><b>Run Analysis</b></button>
+    <button onclick="hideShow($('#CCCinput'),$(this));">Hide Input</button>
+  </div>
+  <pre id="CCCnote" style="color:red; margin-top:10px;"></pre>
+  <!-- Comparison-view disclaimer: filled in by CCCshowBanner() -->
+  <div id="CCCbanner" style="display:none; margin-top:10px; padding:8px 10px; border:2px solid #c25e00; background:#fff4e5; font-size:13px; line-height:1.45;"></div>
+  <div id="CCCspin" class="loading style-2" style="visibility: hidden;"><div class="loading-wheel"></div></div>
+  <div id="CCCresize" style="height: 'auto'; padding: 0.5em; border: 1px solid #B6B6B6; margin-top:10px;">
+    <div id="CCCresultHeader" style="display:none; margin-bottom:10px;">
+      <button onclick="CCCexportCSV()" style="margin-right:10px;"><b>Export CSV</b></button>
+      <span id="CCCresultInfo" style="color:#666;"></span>
+    </div>
+    <div id="CCCtableContainer" style="margin-bottom:15px; max-height:400px; overflow-y:auto;">
+      <table id="CCCtable" class="display" style="width:100%; font-size:12px;"></table>
+    </div>
+    <p id="CCCfig"><i>Configure options above and click "Run Analysis"</i></p>
+  </div>
+</div><!--CCC-->

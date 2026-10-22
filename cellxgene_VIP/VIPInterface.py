@@ -8,7 +8,6 @@ import anndata as ad
 import pandas as pd
 import numpy as np
 import diffxpy.api as de
-import liana as li
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
@@ -41,6 +40,7 @@ ppr = pprint.PrettyPrinter(depth=6,width=500)
 import server.common.compute.diffexp_generic as diffDefault
 import pickle
 from pyarrow import feather
+import server.app.ccc as ccc # cell-cell communication extension (ccc.py)
 
 sys.setrecursionlimit(10000)
 sc.settings.verbosity = 2
@@ -332,7 +332,7 @@ def distributeTask(aTask):
     'plotCOSMX':plotCosMx,
     'checkVisium':getVisium,
     'plotVisium':plotVisium,
-    'CCC':CCC
+    'CCC':ccc.CCC
   }.get(aTask,errorTask)
 
 def HELLO(data):
@@ -1984,224 +1984,6 @@ def saveTest(data):
         with open(strPath+re.sub("h5ad$","img.txt",strH5ad),'w') as f:
             f.write(data['img'])
     return 'success'
-
-def CCC(data):
-    """
-    Cell-cell communication analysis using LIANA.
-
-    Request format (from CCCbuildRequest() in interface.html):
-    {
-        method: "CCC",
-        mode: "targeted" | "untargeted",
-        compute: {
-            cells: "all" | "celllist1" | "celllist2",
-            cell_indices: [...] | null,
-            groupby: str,
-            compare_by: str | null,
-            compare_values: [...],
-            ccc_method: str,
-            resource: str,
-            min_cells: int,
-            n_perms: int
-        },
-        display: {
-            sender: str | null,
-            receiver: str | null,
-            direction: str,
-            top_n: int,
-            sort_by: str
-        }
-    }
-
-    Returns: JSON array [csv_data, base64_image]
-    """
-
-    # 1. Access full AnnData from data adapter
-    scD = data.get('data_adapter')
-    if scD is None:
-        return Msg("No data adapter available")
-
-    # Work with a copy to avoid modifying original
-    adata = scD.data.copy()
-
-    # 2. Extract compute parameters
-    compute = data.get('compute', {})
-    cells_selection = compute.get('cells', 'all')
-
-    # Filter cells if specific selection requested
-    if cells_selection != 'all':
-        cell_indices = compute.get('cell_indices')
-        if cell_indices and len(cell_indices) > 0:
-            adata = adata[cell_indices, :].copy()
-        else:
-            return Msg("No cells selected. Please select cells first.")
-
-    # 3. Validate groupby column exists
-    groupby = compute.get('groupby')
-    if not groupby or groupby == 'NA':
-        return Msg("Please select a cell type annotation column")
-
-    if groupby not in adata.obs.columns:
-        return Msg(f"Annotation '{groupby}' not found in dataset")
-
-    # Ensure groupby is categorical/string
-    adata.obs[groupby] = adata.obs[groupby].astype(str)
-
-    # 4. Check minimum cells per group
-    min_cells = compute.get('min_cells', 20)
-    group_counts = adata.obs[groupby].value_counts()
-    valid_groups = group_counts[group_counts >= min_cells].index.tolist()
-
-    if len(valid_groups) < 2:
-        count_str = ", ".join([f"{k}: {v}" for k, v in group_counts.items()])
-        return Msg(f"Need at least 2 cell types with >= {min_cells} cells each.\n"
-                   f"Found {len(valid_groups)} valid groups.\n"
-                   f"Group sizes: {count_str}")
-
-    # Filter to valid groups only
-    adata = adata[adata.obs[groupby].isin(valid_groups)].copy()
-
-    # 5. Check for raw counts
-    if adata.raw is not None:
-        use_raw = True
-    else:
-        # Check if X might contain raw counts (integers or high values)
-        sample_max = adata.X[:100, :100].max() if hasattr(adata.X, '__getitem__') else 50
-        if sample_max < 20:  # Likely log-normalized
-            ppr.pprint("Warning: No raw counts detected. Using X directly.")
-        use_raw = False
-
-    # 6. Map resource names (frontend uses lowercase)
-    resource_map = {
-        'consensus': 'consensus',
-        'cellphonedb': 'CellPhoneDB',
-        'cellchatdb': 'CellChatDB',
-        'connectomedb': 'Connectome'
-    }
-    resource = resource_map.get(compute.get('resource', 'consensus'), 'consensus')
-
-    # 7. Run LIANA rank_aggregate
-    n_perms = compute.get('n_perms', 1000)
-    if n_perms is not None and n_perms < 100:
-        n_perms = None  # Disable permutation testing for speed
-
-    try:
-        li.mt.rank_aggregate(
-            adata,
-            groupby=groupby,
-            resource_name=resource,
-            expr_prop=0.1,
-            use_raw=use_raw,
-            n_perms=n_perms,
-            verbose=False
-        )
-    except Exception as e:
-        ppr.pprint(f"LIANA error: {traceback.format_exc()}")
-        return Msg(f"LIANA analysis failed:\n{str(e)}")
-
-    # 8. Extract results
-    if 'liana_res' not in adata.uns:
-        return Msg("No interactions found.\nCheck cell type annotations and gene expression.")
-
-    liana_res = adata.uns['liana_res'].copy()
-
-    if len(liana_res) == 0:
-        return Msg("No ligand-receptor interactions detected\nbetween the selected cell types.")
-
-    # 9. Filter for targeted mode
-    display = data.get('display', {})
-    mode = data.get('mode', 'untargeted')
-
-    if mode == 'targeted':
-        sender = display.get('sender')
-        receiver = display.get('receiver')
-        direction = display.get('direction', 'one_way')
-
-        if sender and receiver:
-            # Convert to string for comparison
-            liana_res['source'] = liana_res['source'].astype(str)
-            liana_res['target'] = liana_res['target'].astype(str)
-
-            if direction == 'one_way':
-                liana_res = liana_res[
-                    (liana_res['source'] == str(sender)) &
-                    (liana_res['target'] == str(receiver))
-                ]
-            else:  # both_ways
-                liana_res = liana_res[
-                    ((liana_res['source'] == str(sender)) & (liana_res['target'] == str(receiver))) |
-                    ((liana_res['source'] == str(receiver)) & (liana_res['target'] == str(sender)))
-                ]
-
-    if len(liana_res) == 0:
-        return Msg("No interactions found for\nthe selected sender/receiver pair.")
-
-    # 10. Sort results
-    sort_by = display.get('sort_by', 'magnitude')
-    sort_col_map = {
-        'magnitude': 'magnitude_rank',
-        'specificity': 'specificity_rank',
-        'pvalue': 'cellphone_pvals'
-    }
-    sort_col = sort_col_map.get(sort_by, 'magnitude_rank')
-
-    if sort_col in liana_res.columns:
-        liana_res = liana_res.sort_values(by=sort_col, ascending=True)
-
-    # 11. Limit to top_n
-    top_n = display.get('top_n', 20)
-    liana_res_display = liana_res.head(top_n)
-
-    # 12. Create visualization
-    img = ""
-    try:
-        # Determine available columns for plotting
-        size_col = 'specificity_rank' if 'specificity_rank' in adata.uns['liana_res'].columns else 'magnitude_rank'
-
-        # Get unique sources and targets from filtered results
-        source_labels = liana_res_display['source'].unique().tolist()
-        target_labels = liana_res_display['target'].unique().tolist()
-
-        if len(source_labels) > 0 and len(target_labels) > 0:
-            fig = li.pl.dotplot(
-                adata=adata,
-                colour='magnitude_rank',
-                size=size_col,
-                inverse_colour=True,
-                inverse_size=True,
-                source_labels=source_labels,
-                target_labels=target_labels,
-                top_n=min(top_n, 50),
-                orderby='magnitude_rank',
-                orderby_ascending=True,
-                return_fig=True
-            )
-
-            # Convert plotnine figure to base64
-            figD = BytesIO()
-            dpi = int(data.get('figOpt', {}).get('dpi', 150))
-            fig.save(figD, format='png', dpi=dpi)
-            img = base64.encodebytes(figD.getvalue()).decode("utf-8")
-            figD.close()
-    except Exception as e:
-        ppr.pprint(f"Plot creation failed: {e}")
-        # Continue without plot - we still have the table data
-
-    # 13. Prepare CSV output - format numeric columns
-    output_cols = ['source', 'target', 'ligand_complex', 'receptor_complex', 'lr_means', 'magnitude_rank']
-    if 'specificity_rank' in liana_res_display.columns:
-        output_cols.append('specificity_rank')
-    if 'cellphone_pvals' in liana_res_display.columns:
-        output_cols.append('cellphone_pvals')
-
-    # Only keep columns that exist
-    output_cols = [c for c in output_cols if c in liana_res_display.columns]
-    csv_df = liana_res_display[output_cols].copy()
-
-    csv_data = csv_df.to_csv(index=False)
-
-    # 14. Return in VIP standard format
-    return json.dumps([csv_data, img])
 
 def adata_to_df(adata):
   if len(adata) == 0:

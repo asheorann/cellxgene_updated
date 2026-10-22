@@ -1,0 +1,2 @@
+# Code runs under Linux/WSL; keep LF line endings even on Windows checkouts
+* text=auto eol=lf

@@ -14,7 +14,7 @@
     "lint": "eslint --fix src __tests__",
     "prod": "npm run build -- configuration/webpack/webpack.config.prod.js",
     "test": "jest --testPathIgnorePatterns e2e",
-    "prepare": "cd .. && husky install client/.husky"
+    "prepare": "cd .. && (husky install client/.husky || true)"
   },
   "engineStrict": true,
   "engines": {

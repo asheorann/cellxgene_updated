@@ -11,23 +11,36 @@ Adding cell-cell communication (CCC) analysis to the CellxGene VIP viewer. Users
 
 The plan is to merge ParaCell's trajectory features into current VIP to get the most complete base. ParaCell is 126 commits behind VIP but added clean extensions.
 
+### Keep Our Code Separate From Upstream (rule)
+Code we add goes in **our own files**, never inside VIP's or cellxgene's files, so
+upstream VIP updates can be pulled in with `tools/sync_vip_upstream.sh` without
+fighting our changes.
+- New backend code: `cellxgene_VIP/ccc.py` (or another new module next to it).
+- New frontend code: `cellxgene_VIP/ccc.js` / `ccc.html` (or new files loaded the same way).
+- Upstream files (`VIPInterface.py`, `interface.html`, `update.VIPInterface.sh`, R scripts, `cellxgene/`) only get minimal **hook lines** (an import, a dispatcher entry, a script loader, a `cp` line). Don't refactor, reformat or fix unrelated things in them.
+- If a hook or upstream edit is unavoidable, log it in `CHANGES_FROM_UPSTREAM.md` and add a check for it in `tools/check_ccc_compat.py`.
+- New VIP functions/state our code relies on also go in `check_ccc_compat.py`.
+
 ### Key Files
-- `VIPInterface.py` - Backend analysis dispatcher (~2000 lines). Add new analysis functions here.
-- `interface.html` - Frontend UI (~6000 lines). Add UI controls and AJAX calls here.
+- `cellxgene_VIP/ccc.py`, `ccc.js`, `ccc.html` - **our CCC code** (backend, frontend logic, tab markup).
+- `CHANGES_FROM_UPSTREAM.md` - every difference from upstream VIP/cellxgene/LIANA, and the upstream sync process.
+- `tools/` - `sync_vip_upstream.sh`, `check_ccc_compat.py`, `test_ccc_backend.py`.
+- `VIPInterface.py` - upstream backend dispatcher (~2000 lines). Hooks only.
+- `interface.html` - upstream frontend UI (~6000 lines). Hooks only.
 - `bin/` - R scripts for visualization (volcano.R, fgsea.R, etc.)
 
 ### Extension Pattern
 ```python
-# 1. Add function in VIPInterface.py
+# 1. Add the function in ccc.py (or a new module of ours)
 def CCC(data):
-    adata = createData(data)  # Get AnnData slice
+    adata = data['data_adapter'].data  # full AnnData
     # ... run analysis ...
-    return iostreamFig(fig)   # or json.dumps(results)
+    return json.dumps([csv, img, notes])   # or Msg("...") for errors
 
-# 2. Register in distributeTask() dict at line 290
-'CCC': CCC,
+# 2. Hook: VIPInterface.py imports the module and registers it in distributeTask()
+'CCC':ccc.CCC
 
-# 3. Add frontend in interface.html - jQuery AJAX POST to VIPurl
+# 3. Frontend in ccc.js / ccc.html - jQuery AJAX POST to VIPurl
 ```
 
 ### Data Access
@@ -77,6 +90,14 @@ CCC methods infer interactions from co-expression, not direct measurement. Resul
 
 ## Bug Policy
 Fix only bugs on the path of CCC feature. Log others with reproduction steps - no open-ended cleanup.
+
+## Open Items to Revisit
+Active list, not just a log: raise these with the user when working nearby, and remove an item only when it's fixed (details and repro steps in `CHANGES_FROM_UPSTREAM.md` "Known issues").
+1. **Single-condition view uses `.raw` without a normalization check** (added 2026-10-22). The comparison view checks layers (`CCCresolveLayer`), the single-condition path doesn't. Planned fix: reuse the layer dropdown and check there. Revisit before running on GutPath.
+2. **Validate the comparison view on GutPath** before trusting it there: which layer is log-normalized, the mouse ID column, mice per condition per cell type at 30 cells. Layer-check cut-offs were calibrated on pbmc68k and synthetic data only.
+3. **Differential analysis across replicates** (pseudobulk DESeq2 / `df_to_lr`): the comparison view's disclaimer says it is "not yet available"; update the banner (`ccc.js` `CCCshowBanner`) when it exists.
+4. **Remove `CCCpatchLiana()`** once a LIANA release with the `rank_aggregate` fix can be installed (needs Python > 3.8).
+5. "Cells to include" dropdown counts stuck at 0; `CCCbuildRequest()` ignores accumulate mode.
 
 ## Current Phase: Local Testing
 
