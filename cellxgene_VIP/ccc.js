@@ -416,8 +416,9 @@ function CCCbuildRequest(){
       min_cells_per_sample: parseInt($("#CCCminCellsSample").val()),
       ccc_method: $("#CCCmethod option:selected").val(),
       resource: $("#CCCresource option:selected").val(),
-      min_cells: parseInt($("#CCCminCells").val()),
-      n_perms: parseInt($("#CCCnPerms").val())
+      min_cells: parseInt($("#CCCminCells").val()) || 20,
+      n_perms: parseInt($("#CCCnPerms").val()) || 0,
+      max_cells_per_type: parseInt($("#CCCmaxCellsPerType").val()) || 500
     },
     display: {
       sender: mode === "targeted" ? $("#CCCsender option:selected").val() : null,
@@ -457,7 +458,7 @@ function CCCrun(){
   // Clear notes and show spinner
   $("#CCCnote").html("");
   CCCshowBanner(null);
-  $("#CCCfig").html("<i>Running LIANA analysis... This may take 30-60 seconds.</i>");
+  $("#CCCfig").html("<i>Running LIANA analysis...</i>");
   $("#CCCresultHeader").hide();
   document.getElementById("CCCspin").style.visibility = "visible";
   $(".CCCbt").prop('disabled', true);

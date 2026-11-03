@@ -92,8 +92,8 @@
       <div style="margin-top:10px; padding-left:10px;">
         <p><b>CCC Method:</b>
           <select id="CCCmethod">
-            <option value="rank_aggregate" selected>Rank Aggregate (consensus of methods)</option>
-            <option value="cellphonedb">CellPhoneDB</option>
+            <option value="cellphonedb" selected>CellPhoneDB (fast)</option>
+            <option value="rank_aggregate">Rank Aggregate (slower, consensus of methods)</option>
             <option value="natmi">NATMI</option>
             <option value="connectome">Connectome</option>
             <option value="logfc">Log2FC</option>
@@ -118,7 +118,12 @@
           <small style="color:#666;">a mouse counts only with this many cells of both sender and target</small>
         </p>
         <p><b>Permutations:</b>
-          <input type="number" id="CCCnPerms" value="1000" min="100" max="10000" step="100" style="width:80px;"/>
+          <input type="number" id="CCCnPerms" value="0" min="0" max="10000" step="100" style="width:80px;"/>
+          <small style="color:#666;">0 = skip (fast), 100-1000 for p-values</small>
+        </p>
+        <p><b>Max cells per type:</b>
+          <input type="number" id="CCCmaxCellsPerType" value="500" min="50" max="5000" step="50" style="width:80px;"/>
+          <small style="color:#666;">subsample large cell types for speed</small>
         </p>
         <p><b>Sort results by:</b>
           <select id="CCCsortBy">

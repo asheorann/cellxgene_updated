@@ -6352,5 +6352,24 @@ DimPlot(X, reduction = "pca")
 ```
 </div>
 <script>/* CCC extension: loads static/ccc.js, which adds the CCC tab */ $.getScript(window.location.href.replace(/\/+$/,'')+'/static/ccc.js');</script>
+<script>/* VIP Theme: inject CSS into main page */
+(function(){
+  var baseUrl = window.location.href.replace(/\/+$/,'');
+  // Load CSS into both VIP panel and parent document (main cellxgene)
+  var link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = baseUrl + '/static/vip-theme.css';
+  document.head.appendChild(link);
+  // Also inject into parent if we're in an iframe/panel
+  if (window.parent && window.parent.document && window.parent !== window) {
+    var parentLink = window.parent.document.createElement('link');
+    parentLink.rel = 'stylesheet';
+    parentLink.href = baseUrl + '/static/vip-theme.css';
+    window.parent.document.head.appendChild(parentLink);
+  }
+  // Load theme JS
+  $.getScript(baseUrl + '/static/vip-theme.js');
+})();
+</script>
 </body>
 </html>

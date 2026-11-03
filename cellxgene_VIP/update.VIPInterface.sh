@@ -11,7 +11,40 @@ cp VIPInterface.py $strPath/server/app/.
 cp interface.html $strweb
 cp ccc.py $strPath/server/app/.
 cp ccc.js ccc.html $strweb
+cp vip-theme.css vip-theme.js $strweb
 cp vip.env $strPath/server/app/. 2>/dev/null | true
+
+# Inject vip-theme.css into the main cellxgene index.html so it loads on startup
+# Search for index.html in multiple locations
+for indexhtml in \
+  "${strPath}/server/common/web/static/index.html" \
+  "${strPath}/server/common/web/index.html" \
+  "${strPath}/server/common/web/templates/index.html" \
+  $(find "${strPath}/server" -name "index.html" 2>/dev/null | head -5)
+do
+  if [ -f "$indexhtml" ]; then
+    echo "Found index.html at: $indexhtml"
+    if ! grep -q "vip-theme.css" "$indexhtml"; then
+      echo "Injecting vip-theme.css..."
+      sed -i 's|</head>|<link rel="stylesheet" href="static/vip-theme.css"></head>|' "$indexhtml"
+    else
+      echo "vip-theme.css already injected"
+    fi
+    break
+  fi
+done
+
+# Also inject CSS import into the main CSS file as fallback
+maincss=$(ls ${strPath}/server/common/web/static/main-*.css 2>/dev/null | head -1)
+if [ -n "$maincss" ] && [ -f "$maincss" ]; then
+  if ! grep -q "vip-theme.css" "$maincss"; then
+    echo "Injecting @import into main CSS: $maincss"
+    # Prepend import statement
+    echo '@import url("vip-theme.css");' | cat - "$maincss" > /tmp/maincss_tmp && mv /tmp/maincss_tmp "$maincss"
+  else
+    echo "vip-theme.css already in main CSS"
+  fi
+fi
 
 cp fgsea.R $strPath/server/app/.
 mkdir -p $strPath/server/app/gsea

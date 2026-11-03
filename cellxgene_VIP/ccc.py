@@ -58,6 +58,12 @@ CCC_EXPR_PROP = 0.1
 # estimate can't tell which side of the 10% cut-off it falls on (SE 0.055 at n=30)
 CCC_SAMPLE_MIN_CELLS = 30
 
+# Speed optimization: subsample large cell types to this many cells for faster analysis
+CCC_MAX_CELLS_PER_TYPE = 500
+
+# Default permutations: None = skip (fast), set to 100-1000 for statistical testing
+CCC_DEFAULT_PERMS = None  # Skip permutation testing by default for speed
+
 # Comparison view: above this many condition columns, stack the two conditions as rows
 CCC_SLOT_LIMIT = 24
 
@@ -156,6 +162,41 @@ def CCCfilterGroups(adata, groupby, min_cells):
     group_counts = adata.obs[groupby].value_counts()
     valid_groups = group_counts[group_counts >= min_cells].index.tolist()
     return adata[adata.obs[groupby].isin(valid_groups)].copy(), valid_groups, group_counts
+
+def CCCsubsample(adata, groupby, max_cells_per_type=CCC_MAX_CELLS_PER_TYPE):
+    """
+    Subsample large cell types to speed up analysis.
+    Returns (subsampled_adata, notes) where notes lists which types were subsampled.
+    """
+    try:
+        if max_cells_per_type is None or max_cells_per_type <= 0:
+            return adata, []
+
+        counts = adata.obs[groupby].value_counts()
+        large = counts[counts > max_cells_per_type]
+        if len(large) == 0:
+            return adata, []
+
+        keep_idx = []
+        notes = []
+        rng = np.random.RandomState(42)
+
+        for group in counts.index:
+            mask = adata.obs[groupby] == group
+            group_idx = np.where(mask)[0]
+            if len(group_idx) > max_cells_per_type:
+                sampled = rng.choice(group_idx, int(max_cells_per_type), replace=False)
+                keep_idx.extend(sampled.tolist())
+            else:
+                keep_idx.extend(group_idx.tolist())
+
+        large_names = [str(n) for n in large.index[:3].tolist()]
+        notes.append(f"Subsampled {len(large)} large cell types to {max_cells_per_type} cells each "
+                     f"({', '.join(large_names)}{', ...' if len(large) > 3 else ''}) for speed.")
+        return adata[sorted(keep_idx)].copy(), notes
+    except Exception as e:
+        ppr.pprint(f"Subsampling failed, using all cells: {e}")
+        return adata, [f"Subsampling skipped due to error: {str(e)[:100]}"]
 
 def CCClayerKeys(adata):
     """Expression layers a user can pick: X, .raw, and every adata.layers key."""
@@ -674,6 +715,16 @@ def CCC(data):
         import liana as li
     except Exception as e:
         return Msg(f"LIANA is not available on the server:\n{str(e)}")
+
+    # Wrap the entire analysis in try-catch for better error reporting
+    try:
+        return _CCC_inner(data, li)
+    except Exception as e:
+        ppr.pprint(f"CCC analysis failed with unexpected error: {traceback.format_exc()}")
+        return Msg(f"CCC analysis failed:\n{str(e)[:500]}")
+
+def _CCC_inner(data, li):
+    """Inner CCC function wrapped by error handler."""
     try:
         CCCpatchLiana()
     except Exception as e:
@@ -769,21 +820,30 @@ def CCC(data):
                           resource, notes, int(data.get('figOpt', {}).get('dpi', 150)))
 
     # 6. Resolve method
-    method_name = CCC_METHODS.get(compute.get('ccc_method', 'rank_aggregate'), 'rank_aggregate')
+    # Default to 'cellphonedb' (single fast method) instead of 'rank_aggregate' (runs 5+ methods)
+    method_name = CCC_METHODS.get(compute.get('ccc_method', 'cellphonedb'), 'cellphonedb')
     method = getattr(li.mt, method_name, None)
     if method is None:
         return Msg(f"Method '{method_name}' is not available in this LIANA version")
 
-    n_perms = compute.get('n_perms', 1000)
+    # Speed optimization: default to no permutations (fast exploratory mode)
+    # Set n_perms >= 100 in the UI for statistical testing
+    n_perms = compute.get('n_perms', CCC_DEFAULT_PERMS)
     if n_perms is not None and n_perms < 100:
         n_perms = None  # Disable permutation testing for speed
 
     # 7. Run LIANA within each condition
     min_cells = compute.get('min_cells', 20)
+    max_cells_per_type = compute.get('max_cells_per_type', CCC_MAX_CELLS_PER_TYPE)
     results = []
     run_adata = None
     for cond in conditions:
         sub = adata if cond is None else adata[adata.obs[compare_by] == cond].copy()
+
+        # Subsample large cell types for speed
+        sub, subsample_notes = CCCsubsample(sub, groupby, max_cells_per_type)
+        notes.extend(subsample_notes)
+
         sub, valid_groups, group_counts = CCCfilterGroups(sub, groupby, min_cells)
         if len(valid_groups) < 2:
             count_str = ", ".join([f"{k}: {v}" for k, v in group_counts.items()])

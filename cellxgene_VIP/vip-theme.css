@@ -1,0 +1,1076 @@
+/**
+ * VIP Modern Theme
+ * Clean, sleek styling for CellxGene + VIP
+ * Injected into both VIP panel and main cellxgene viewer
+ */
+
+/* =============================================
+   INTER FONT
+   ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* =============================================
+   CSS VARIABLES
+   ============================================= */
+:root {
+  --vip-bg: #FFFFFF;
+  --vip-bg-secondary: #F8FAFC;
+  --vip-bg-hover: #F1F5F9;
+  --vip-border: #E2E8F0;
+  --vip-border-light: #F1F5F9;
+  --vip-text: #1E293B;
+  --vip-text-secondary: #64748B;
+  --vip-text-muted: #94A3B8;
+  --vip-accent: #6366F1;
+  --vip-accent-hover: #4F46E5;
+  --vip-accent-light: #EEF2FF;
+  --vip-success: #10B981;
+  --vip-warning: #F59E0B;
+  --vip-radius: 8px;
+  --vip-radius-sm: 6px;
+  --vip-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --vip-shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+/* =============================================
+   GLOBAL TYPOGRAPHY
+   ============================================= */
+body,
+html,
+#root,
+.bp5-running-text,
+.bp4-running-text,
+.bp3-running-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Apply Inter to all text elements */
+h1, h2, h3, h4, h5, h6,
+p, span, div, label, input, select, button, textarea,
+.bp5-button, .bp4-button, .bp3-button,
+.bp5-menu-item, .bp4-menu-item, .bp3-menu-item,
+.bp5-input, .bp4-input, .bp3-input,
+.bp5-tag, .bp4-tag, .bp3-tag {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+/* =============================================
+   CELLXGENE MAIN APP STYLING
+   ============================================= */
+
+/* Main background */
+#root {
+  background: var(--vip-bg-secondary) !important;
+}
+
+/* Top navbar */
+.bp5-navbar,
+.bp4-navbar,
+.bp3-navbar {
+  background: var(--vip-bg) !important;
+  border-bottom: 1px solid var(--vip-border) !important;
+  box-shadow: none !important;
+  padding: 8px 16px !important;
+  height: auto !important;
+  min-height: 50px !important;
+}
+
+/* Remove any extra boxes/backgrounds in navbar */
+.bp5-navbar > *,
+.bp4-navbar > *,
+.bp3-navbar > * {
+  background: transparent !important;
+}
+
+.bp5-navbar-group,
+.bp4-navbar-group {
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 4px !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+/* Left sidebar (categories) */
+[data-testid="category-sidebar"],
+.bp5-drawer,
+.bp4-drawer,
+.bp3-drawer {
+  background: var(--vip-bg) !important;
+  border-right: 1px solid var(--vip-border) !important;
+}
+
+/* VIP Dropdown Button (VISUALIZATION IN PLUGIN) - REMOVE PADDING/BOX */
+.bp5-popover-wrapper,
+.bp4-popover-wrapper,
+.bp3-popover-wrapper {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: auto !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.bp5-popover-target,
+.bp4-popover-target,
+.bp3-popover-target {
+  display: inline-flex !important;
+  height: auto !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+
+/* Remove the gray box wrapper around the dropdown */
+.bp5-navbar *,
+.bp4-navbar *,
+.bp3-navbar * {
+  overflow: visible !important;
+}
+
+/* The actual dropdown button - VISUALIZATION IN PLUGIN */
+.bp5-popover-target > button,
+.bp4-popover-target > button,
+.bp3-popover-target > button,
+.bp5-popover-target > .bp5-button,
+.bp4-popover-target > .bp4-button,
+.bp3-popover-target > .bp3-button {
+  min-height: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  padding: 0 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  background: white !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+}
+
+/* Fix the navbar to not clip the button */
+.bp5-navbar,
+.bp4-navbar,
+.bp3-navbar {
+  min-height: 50px !important;
+  overflow: visible !important;
+}
+
+/* Remove the gray/white box that wraps the dropdown */
+[class*="menubar"],
+[class*="toolbar"],
+[class*="Menubar"],
+[class*="Toolbar"],
+[class*="MenuBar"],
+[class*="ToolBar"] {
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Target any div wrapping the VIP dropdown */
+.bp5-navbar .bp5-popover-wrapper,
+.bp4-navbar .bp4-popover-wrapper {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* Kill ALL backgrounds in navbar except the navbar itself */
+.bp5-navbar > div,
+.bp4-navbar > div,
+.bp3-navbar > div {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Buttons - clean flat style */
+.bp5-button,
+.bp4-button,
+.bp3-button {
+  background: var(--vip-bg) !important;
+  background-image: none !important;
+  border: 1px solid var(--vip-border) !important;
+  border-radius: var(--vip-radius-sm) !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease !important;
+  min-height: 32px !important;
+}
+
+.bp5-button:hover,
+.bp4-button:hover,
+.bp3-button:hover {
+  background: var(--vip-bg-hover) !important;
+  border-color: var(--vip-accent) !important;
+}
+
+.bp5-button:focus,
+.bp4-button:focus,
+.bp3-button:focus {
+  box-shadow: 0 0 0 2px var(--vip-accent-light) !important;
+}
+
+/* Primary/intent buttons */
+.bp5-button.bp5-intent-primary,
+.bp4-button.bp4-intent-primary,
+.bp3-button.bp3-intent-primary,
+.bp5-button.bp5-intent-success,
+.bp4-button.bp4-intent-success {
+  background: var(--vip-accent) !important;
+  border-color: var(--vip-accent) !important;
+  color: white !important;
+}
+
+.bp5-button.bp5-intent-primary:hover,
+.bp4-button.bp4-intent-primary:hover {
+  background: var(--vip-accent-hover) !important;
+}
+
+/* Minimal buttons */
+.bp5-button.bp5-minimal,
+.bp4-button.bp4-minimal,
+.bp3-button.bp3-minimal {
+  border: none !important;
+  background: transparent !important;
+}
+
+.bp5-button.bp5-minimal:hover,
+.bp4-button.bp4-minimal:hover {
+  background: var(--vip-bg-hover) !important;
+}
+
+/* Input fields */
+.bp5-input,
+.bp4-input,
+.bp3-input,
+.bp5-input-group input,
+.bp4-input-group input {
+  background: var(--vip-bg) !important;
+  border: 1px solid var(--vip-border) !important;
+  border-radius: var(--vip-radius-sm) !important;
+  box-shadow: none !important;
+  transition: all 0.15s ease !important;
+}
+
+.bp5-input:focus,
+.bp4-input:focus,
+.bp3-input:focus {
+  border-color: var(--vip-accent) !important;
+  box-shadow: 0 0 0 3px var(--vip-accent-light) !important;
+}
+
+/* Menus */
+.bp5-menu,
+.bp4-menu,
+.bp3-menu {
+  background: var(--vip-bg) !important;
+  border: 1px solid var(--vip-border) !important;
+  border-radius: var(--vip-radius) !important;
+  box-shadow: var(--vip-shadow-lg) !important;
+  padding: 6px !important;
+}
+
+.bp5-menu-item,
+.bp4-menu-item,
+.bp3-menu-item {
+  border-radius: var(--vip-radius-sm) !important;
+}
+
+.bp5-menu-item:hover,
+.bp4-menu-item:hover,
+.bp3-menu-item:hover {
+  background: var(--vip-bg-hover) !important;
+}
+
+/* Popovers */
+.bp5-popover .bp5-popover-content,
+.bp4-popover .bp4-popover-content {
+  border-radius: var(--vip-radius) !important;
+  box-shadow: var(--vip-shadow-lg) !important;
+}
+
+/* Tags */
+.bp5-tag,
+.bp4-tag,
+.bp3-tag {
+  background: var(--vip-bg-hover) !important;
+  border-radius: var(--vip-radius-sm) !important;
+}
+
+/* Cards */
+.bp5-card,
+.bp4-card,
+.bp3-card {
+  background: var(--vip-bg) !important;
+  border: 1px solid var(--vip-border) !important;
+  border-radius: var(--vip-radius) !important;
+  box-shadow: var(--vip-shadow) !important;
+}
+
+/* Dialogs */
+.bp5-dialog,
+.bp4-dialog,
+.bp3-dialog {
+  background: var(--vip-bg) !important;
+  border-radius: var(--vip-radius) !important;
+  box-shadow: var(--vip-shadow-lg) !important;
+}
+
+/* Sliders */
+.bp5-slider-track,
+.bp4-slider-track {
+  background: var(--vip-border) !important;
+}
+
+.bp5-slider-progress,
+.bp4-slider-progress {
+  background: var(--vip-accent) !important;
+}
+
+.bp5-slider-handle,
+.bp4-slider-handle {
+  background: var(--vip-bg) !important;
+  border: 2px solid var(--vip-accent) !important;
+  box-shadow: var(--vip-shadow) !important;
+}
+
+/* =============================================
+   JSPANEL (VIP FLOATING WINDOW)
+   ============================================= */
+
+/* Panel container - make it wide enough for the title */
+.jsPanel {
+  border-radius: var(--vip-radius) !important;
+  box-shadow: var(--vip-shadow-lg) !important;
+  border: 1px solid var(--vip-border) !important;
+  min-width: 300px !important;
+}
+
+/* Panel header - WHITE background, not gray */
+.jsPanel-hdr {
+  background: white !important;
+  border-bottom: 1px solid var(--vip-border) !important;
+  min-height: 44px !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Header bar - remove gray background */
+.jsPanel-headerbar {
+  background: white !important;
+  overflow: visible !important;
+  min-width: 280px !important;
+  height: auto !important;
+  min-height: 40px !important;
+}
+
+/* Title bar - don't clip */
+.jsPanel-titlebar {
+  overflow: visible !important;
+  flex-shrink: 0 !important;
+  min-width: 260px !important;
+  height: auto !important;
+}
+
+/* Title text - VISIBLE, not clipped */
+.jsPanel-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--vip-text) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  line-height: normal !important;
+  padding: 8px 0 !important;
+}
+
+/* Panel control buttons - better spacing */
+.jsPanel-hdr .jsPanel-controlbar {
+  margin-left: 20px !important;
+}
+
+/* Panel control buttons */
+.jsPanel-btn {
+  opacity: 0.6 !important;
+  transition: opacity 0.15s !important;
+}
+
+.jsPanel-btn:hover {
+  opacity: 1 !important;
+}
+
+/* Panel content */
+.jsPanel-content {
+  background: var(--vip-bg) !important;
+  padding: 0 !important;
+}
+
+/* =============================================
+   VIP PANEL CONTENT STYLING
+   ============================================= */
+
+/* =============================================
+   VIP CATEGORIES (Organized Tabs)
+   ============================================= */
+
+.vip-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+.vip-category {
+  border: 1px solid var(--vip-border);
+  border-radius: var(--vip-radius);
+  background: var(--vip-bg);
+  overflow: hidden;
+}
+
+.vip-category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--vip-bg-secondary);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.vip-category-header:hover {
+  background: var(--vip-bg-hover);
+}
+
+.vip-category-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--vip-text);
+}
+
+.vip-category-arrow {
+  font-size: 10px;
+  color: var(--vip-text-muted);
+  transition: transform 0.2s ease;
+}
+
+.vip-category.collapsed .vip-category-arrow {
+  transform: rotate(-90deg);
+}
+
+.vip-category-content {
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  max-height: 500px;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.vip-category.collapsed .vip-category-content {
+  max-height: 0;
+  padding: 0;
+}
+
+/* Tab buttons in VIP */
+.tab button,
+button.tablinks,
+.vip-category-content button {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  padding: 10px 12px !important;
+  margin: 2px 0 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--vip-text-secondary) !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: var(--vip-radius-sm) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  text-align: left !important;
+}
+
+.tab button:hover,
+button.tablinks:hover {
+  background: var(--vip-bg-hover) !important;
+  color: var(--vip-text) !important;
+}
+
+.tab button.active,
+button.tablinks.active {
+  background: var(--vip-accent-light) !important;
+  color: var(--vip-accent) !important;
+  font-weight: 600 !important;
+}
+
+/* Tab content area */
+.tabcontent {
+  background: var(--vip-bg-secondary) !important;
+  padding: 16px !important;
+}
+
+/* Section headers in VIP */
+.tabcontent h3 {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--vip-text) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  margin: 20px 0 12px 0 !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid var(--vip-border-light) !important;
+}
+
+.tabcontent h3:first-child {
+  margin-top: 0 !important;
+}
+
+/* Form elements in VIP */
+.tabcontent select,
+.tabcontent input[type="text"],
+.tabcontent input[type="number"],
+.tabcontent textarea {
+  width: 100% !important;
+  padding: 10px 12px !important;
+  font-size: 13px !important;
+  color: var(--vip-text) !important;
+  background: var(--vip-bg) !important;
+  border: 1px solid var(--vip-border) !important;
+  border-radius: var(--vip-radius-sm) !important;
+  transition: all 0.15s ease !important;
+  box-sizing: border-box !important;
+}
+
+.tabcontent select:focus,
+.tabcontent input:focus,
+.tabcontent textarea:focus {
+  outline: none !important;
+  border-color: var(--vip-accent) !important;
+  box-shadow: 0 0 0 3px var(--vip-accent-light) !important;
+}
+
+.tabcontent select {
+  cursor: pointer !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748B' d='M6 8L2 4h8z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  padding-right: 36px !important;
+}
+
+/* Buttons in VIP content */
+.tabcontent button {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 10px 16px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--vip-text-secondary) !important;
+  background: var(--vip-bg) !important;
+  border: 1px solid var(--vip-border) !important;
+  border-radius: var(--vip-radius-sm) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.tabcontent button:hover {
+  background: var(--vip-bg-hover) !important;
+  border-color: var(--vip-accent) !important;
+  color: var(--vip-text) !important;
+}
+
+/* Primary action buttons */
+.tabcontent button.SGVbt,
+.tabcontent button.HEATbt,
+.tabcontent button.DOTbt,
+.tabcontent button.EMBEDbt,
+.tabcontent button.GDbt,
+.tabcontent button.MARKbt,
+.tabcontent button.CCCbt,
+.tabcontent button.TRAKbt,
+.tabcontent button.DENSbt {
+  background: var(--vip-accent) !important;
+  border-color: var(--vip-accent) !important;
+  color: white !important;
+}
+
+.tabcontent button.SGVbt:hover,
+.tabcontent button.HEATbt:hover,
+.tabcontent button.DOTbt:hover,
+.tabcontent button.EMBEDbt:hover,
+.tabcontent button.GDbt:hover,
+.tabcontent button.MARKbt:hover,
+.tabcontent button.CCCbt:hover {
+  background: var(--vip-accent-hover) !important;
+  border-color: var(--vip-accent-hover) !important;
+}
+
+/* =============================================
+   SCROLLBARS
+   ============================================= */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vip-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vip-text-muted);
+}
+
+/* =============================================
+   DATATABLES
+   ============================================= */
+table.dataTable {
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+table.dataTable thead th {
+  background: var(--vip-bg-secondary) !important;
+  border-bottom: 2px solid var(--vip-border) !important;
+  color: var(--vip-text) !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  padding: 12px !important;
+}
+
+table.dataTable tbody td {
+  border-bottom: 1px solid var(--vip-border-light) !important;
+  padding: 10px 12px !important;
+  color: var(--vip-text-secondary) !important;
+  font-size: 13px !important;
+}
+
+table.dataTable tbody tr:hover {
+  background: var(--vip-bg-hover) !important;
+}
+
+.dataTables_filter input {
+  border: 1px solid var(--vip-border) !important;
+  border-radius: var(--vip-radius-sm) !important;
+  padding: 8px 12px !important;
+}
+
+.dataTables_filter input:focus {
+  border-color: var(--vip-accent) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--vip-accent-light) !important;
+}
+
+/* =============================================
+   SELECTION DISPLAY (cellN1, cellN2)
+   ============================================= */
+.cellN1, .cellN2 {
+  font-weight: 600 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+}
+
+/* =============================================
+   LOADING SPINNERS
+   ============================================= */
+.bp5-spinner .bp5-spinner-head,
+.bp4-spinner .bp4-spinner-head {
+  stroke: var(--vip-accent) !important;
+}
+
+/* =============================================
+   GRIDSTACK WIDGETS
+   ============================================= */
+.grid-stack-item-content {
+  background: var(--vip-bg) !important;
+  border: 1px solid var(--vip-border) !important;
+  border-radius: var(--vip-radius) !important;
+  box-shadow: var(--vip-shadow) !important;
+}
+
+/* =============================================
+   TUTORIAL OVERLAY SYSTEM
+   ============================================= */
+
+#vip-tutorial-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+}
+
+#vip-tutorial-overlay.active {
+  display: block;
+}
+
+.vip-tutorial-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.vip-tutorial-modal {
+  position: absolute;
+  background: var(--vip-bg);
+  border-radius: var(--vip-radius);
+  box-shadow: var(--vip-shadow-lg);
+  padding: 24px;
+  max-width: 380px;
+  z-index: 100000;
+}
+
+.vip-tutorial-modal.center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vip-tutorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.vip-tutorial-step-indicator {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--vip-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vip-tutorial-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: var(--vip-bg-hover);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--vip-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.vip-tutorial-close:hover {
+  background: var(--vip-border);
+  color: var(--vip-text);
+}
+
+.vip-tutorial-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--vip-text);
+  margin: 0 0 12px 0;
+}
+
+.vip-tutorial-content {
+  font-size: 14px;
+  color: var(--vip-text-secondary);
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+}
+
+.vip-tutorial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vip-tutorial-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.vip-tutorial-btn {
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--vip-radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vip-tutorial-btn-skip {
+  background: transparent;
+  border: none;
+  color: var(--vip-text-muted);
+}
+
+.vip-tutorial-btn-skip:hover {
+  color: var(--vip-text-secondary);
+}
+
+.vip-tutorial-btn-prev {
+  background: var(--vip-bg);
+  border: 1px solid var(--vip-border);
+  color: var(--vip-text-secondary);
+}
+
+.vip-tutorial-btn-prev:hover {
+  border-color: var(--vip-accent);
+  color: var(--vip-text);
+}
+
+.vip-tutorial-btn-next {
+  background: var(--vip-accent);
+  border: 1px solid var(--vip-accent);
+  color: white;
+}
+
+.vip-tutorial-btn-next:hover {
+  background: var(--vip-accent-hover);
+  border-color: var(--vip-accent-hover);
+}
+
+/* Spotlight - the visible area during tutorial */
+.vip-tutorial-spotlight {
+  position: fixed;
+  border: 3px solid var(--vip-accent, #6366F1);
+  border-radius: var(--vip-radius, 8px);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75);
+  z-index: 99998;
+  pointer-events: none;
+  display: none;
+  transition: all 0.3s ease;
+}
+
+/* Legacy highlight class */
+.vip-tutorial-highlight {
+  position: fixed;
+  border: 2px solid var(--vip-accent);
+  border-radius: var(--vip-radius);
+  box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.4);
+  z-index: 99998;
+  pointer-events: none;
+  display: none;
+}
+
+/* Help button (floating) */
+#vip-help-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--vip-accent, #6366F1);
+  border: none;
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+#vip-help-btn:hover {
+  background: var(--vip-accent-hover, #4F46E5);
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+}
+
+/* =============================================
+   ADDITIONAL POLISH
+   ============================================= */
+
+/* Smooth transitions globally */
+* {
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
+}
+
+/* Remove default focus outlines, use our styled ones */
+*:focus {
+  outline: none;
+}
+
+/* Better text rendering */
+body {
+  text-rendering: optimizeLegibility;
+}
+
+/* Graph/UMAP container */
+[data-testid="layout-graph"],
+.graph-wrapper,
+#layout-content {
+  background: var(--vip-bg) !important;
+}
+
+/* Selection info badges */
+.selection-info,
+.cell-count-badge {
+  background: var(--vip-accent-light) !important;
+  color: var(--vip-accent) !important;
+  border-radius: var(--vip-radius-sm) !important;
+  padding: 4px 10px !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+}
+
+/* Tooltips */
+.bp5-tooltip .bp5-popover-content,
+.bp4-tooltip .bp4-popover-content,
+.bp3-tooltip .bp3-popover-content {
+  background: var(--vip-text) !important;
+  color: white !important;
+  border-radius: var(--vip-radius-sm) !important;
+  font-size: 12px !important;
+  padding: 8px 12px !important;
+}
+
+/* Checkboxes - MORE VISIBLE */
+.bp5-checkbox .bp5-control-indicator,
+.bp4-checkbox .bp4-control-indicator,
+.bp3-checkbox .bp3-control-indicator,
+.bp5-control .bp5-control-indicator,
+.bp4-control .bp4-control-indicator,
+.bp3-control .bp3-control-indicator {
+  border-radius: 4px !important;
+  border: 2px solid #94A3B8 !important;
+  background: var(--vip-bg) !important;
+  box-shadow: none !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.bp5-checkbox:hover .bp5-control-indicator,
+.bp4-checkbox:hover .bp4-control-indicator,
+.bp3-checkbox:hover .bp3-control-indicator,
+.bp5-control:hover .bp5-control-indicator,
+.bp4-control:hover .bp4-control-indicator {
+  border-color: var(--vip-accent) !important;
+  background: var(--vip-accent-light) !important;
+}
+
+.bp5-checkbox input:checked ~ .bp5-control-indicator,
+.bp4-checkbox input:checked ~ .bp4-control-indicator,
+.bp3-checkbox input:checked ~ .bp3-control-indicator,
+.bp5-control input:checked ~ .bp5-control-indicator,
+.bp4-control input:checked ~ .bp4-control-indicator {
+  background: var(--vip-accent) !important;
+  border-color: var(--vip-accent) !important;
+}
+
+/* Checkbox checkmark icon */
+.bp5-checkbox input:checked ~ .bp5-control-indicator::before,
+.bp4-checkbox input:checked ~ .bp4-control-indicator::before,
+.bp3-checkbox input:checked ~ .bp3-control-indicator::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z'/%3E%3C/svg%3E") !important;
+}
+
+/* Radio buttons */
+.bp5-radio .bp5-control-indicator,
+.bp4-radio .bp4-control-indicator {
+  border: 1px solid var(--vip-border) !important;
+  background: var(--vip-bg) !important;
+}
+
+.bp5-radio input:checked ~ .bp5-control-indicator,
+.bp4-radio input:checked ~ .bp4-control-indicator {
+  background: var(--vip-accent) !important;
+  border-color: var(--vip-accent) !important;
+}
+
+/* Switch toggles */
+.bp5-switch .bp5-switch-inner-text,
+.bp4-switch .bp4-switch-inner-text {
+  font-size: 11px !important;
+}
+
+.bp5-switch input:checked ~ .bp5-control-indicator,
+.bp4-switch input:checked ~ .bp4-control-indicator {
+  background: var(--vip-accent) !important;
+}
+
+/* Remove blueprint's heavy borders on icon buttons */
+.bp5-button.bp5-minimal .bp5-icon,
+.bp4-button.bp4-minimal .bp4-icon {
+  color: var(--vip-text-secondary) !important;
+}
+
+.bp5-button.bp5-minimal:hover .bp5-icon,
+.bp4-button.bp4-minimal:hover .bp4-icon {
+  color: var(--vip-accent) !important;
+}
+
+/* Clean up dividers */
+.bp5-divider,
+.bp4-divider,
+.bp3-divider {
+  border-color: var(--vip-border-light) !important;
+}
+
+/* Progress bars */
+.bp5-progress-bar .bp5-progress-meter,
+.bp4-progress-bar .bp4-progress-meter {
+  background: var(--vip-accent) !important;
+}
+
+/* Callouts/alerts */
+.bp5-callout,
+.bp4-callout {
+  border-radius: var(--vip-radius) !important;
+  border-left: 4px solid var(--vip-accent) !important;
+}
+
+/* Form labels */
+.bp5-label,
+.bp4-label,
+.tabcontent label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--vip-text) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.3px !important;
+  margin-bottom: 6px !important;
+  display: block !important;
+}

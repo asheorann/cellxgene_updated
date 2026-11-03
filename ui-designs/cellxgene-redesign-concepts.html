@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CellxGene VIP - UI Redesign Concepts</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #FAFBFC;
+            --bg-secondary: #FFFFFF;
+            --bg-tertiary: #F1F4F8;
+            --surface: #FFFFFF;
+            --border: #E5E9F0;
+            --border-subtle: #EEF1F6;
+
+            --text-primary: #1A1F36;
+            --text-secondary: #5E6687;
+            --text-muted: #8F95B2;
+
+            --accent: #5856D6;
+            --accent-light: #7B79E8;
+            --accent-subtle: #EEEEFF;
+            --accent-glow: rgba(88, 86, 214, 0.15);
+
+            --success: #34C759;
+            --warning: #FF9500;
+            --danger: #FF3B30;
+
+            --shadow-sm: 0 1px 3px rgba(26, 31, 54, 0.04);
+            --shadow-md: 0 4px 12px rgba(26, 31, 54, 0.06);
+            --shadow-lg: 0 12px 40px rgba(26, 31, 54, 0.08);
+            --shadow-glow: 0 0 0 3px var(--accent-glow);
+
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+
+            --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Design Switcher */
+        .design-switcher {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .design-switcher h1 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: -0.01em;
+        }
+
+        .design-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-tertiary);
+            padding: 4px;
+            border-radius: var(--radius-md);
+        }
+
+        .design-tab {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .design-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .design-tab.active {
+            background: var(--surface);
+            color: var(--accent);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .design-container {
+            display: none;
+            margin-top: 56px;
+            height: calc(100vh - 56px);
+        }
+
+        .design-container.active {
+            display: block;
+        }
+
+        /* ========================================
+           DESIGN 1: Collapsible Sidebar
+           ======================================== */
+        .design-1 {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 100%;
+            background: var(--bg-primary);
+        }
+
+        .d1-sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .d1-sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .d1-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .d1-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .d1-logo-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .d1-logo-text {
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: -0.02em;
+        }
+
+        .d1-logo-text span {
+            color: var(--accent);
+        }
+
+        .d1-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .d1-nav-section {
+            margin-bottom: 8px;
+        }
+
+        .d1-nav-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: background 0.15s ease;
+        }
+
+        .d1-nav-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .d1-nav-header svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .d1-nav-section.collapsed .d1-nav-header svg {
+            transform: rotate(-90deg);
+        }
+
+        .d1-nav-items {
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .d1-nav-section.collapsed .d1-nav-items {
+            max-height: 0 !important;
+        }
+
+        .d1-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .d1-nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .d1-nav-item.active {
+            background: var(--accent-subtle);
+            color: var(--accent);
+        }
+
+        .d1-nav-item svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
+
+        .d1-nav-item.active svg {
+            opacity: 1;
+        }
+
+        .d1-selection-card {
+            margin: 12px;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-subtle), #F8F7FF);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(88, 86, 214, 0.1);
+        }
+
+        .d1-selection-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
+
+        .d1-selection-count {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .d1-selection-count span {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .d1-selection-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .d1-main {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        .d1-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .d1-toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .d1-breadcrumb {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .d1-breadcrumb strong {
+            color: var(--text-primary);
+        }
+
+        .d1-toolbar-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .d1-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .d1-btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .d1-btn-ghost:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .d1-btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .d1-btn-primary:hover {
+            background: var(--accent-light);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .d1-plot-area {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .d1-plot {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 1;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .d1-plot-header {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .d1-plot-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--surface);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .d1-plot-legend {
+            display: flex;
+            gap: 12px;
+            background: var(--surface);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .d1-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .d1-legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .umap-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ========================================
+           DESIGN 2: Bottom Drawer
+           ======================================== */
+        .design-2 {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: var(--bg-primary);
+        }
+
+        .d2-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 24px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .d2-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .d2-logo-mark {
+            width: 28px;
+            height: 28px;
+            background: var(--text-primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .d2-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .d2-selection-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--accent-subtle);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        .d2-selection-pill::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .d2-main {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .d2-plot-container {
+            width: calc(100% - 48px);
+            height: calc(100% - 48px);
+            max-width: 900px;
+            max-height: 700px;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .d2-floating-toolbar {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+            padding: 6px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .d2-toolbar-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .d2-toolbar-btn:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .d2-toolbar-btn.highlight {
+            background: var(--accent);
+            color: white;
+        }
+
+        .d2-toolbar-btn.highlight:hover {
+            background: var(--accent-light);
+        }
+
+        .d2-toolbar-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .d2-drawer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            box-shadow: 0 -8px 32px rgba(0,0,0,0.08);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .d2-drawer.collapsed {
+            transform: translateY(calc(100% - 48px));
+        }
+
+        .d2-drawer-handle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .d2-drawer-handle::before {
+            content: '';
+            width: 40px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 100px;
+            transition: background 0.15s ease;
+        }
+
+        .d2-drawer-handle:hover::before {
+            background: var(--text-muted);
+        }
+
+        .d2-drawer-content {
+            padding: 0 24px 24px;
+        }
+
+        .d2-drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .d2-drawer-title {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .d2-drawer-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.15s ease;
+        }
+
+        .d2-drawer-close:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .d2-form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .d2-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .d2-form-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+
+        .d2-select {
+            padding: 10px 14px;
+            font-size: 14px;
+            font-family: var(--font-sans);
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .d2-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .d2-run-btn {
+            grid-column: span 3;
+            padding: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        .d2-run-btn:hover {
+            background: var(--accent-light);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-1px);
+        }
+
+        /* ========================================
+           DESIGN 3: Chat Interface
+           ======================================== */
+        .design-3 {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            height: 100%;
+            background: var(--bg-primary);
+        }
+
+        .d3-main {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .d3-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .d3-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .d3-logo {
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .d3-logo-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--text-primary);
+            border-radius: 5px;
+        }
+
+        .d3-view-toggle {
+            display: flex;
+            gap: 2px;
+            padding: 3px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+        }
+
+        .d3-view-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .d3-view-btn.active {
+            background: var(--surface);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .d3-plot-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .d3-plot {
+            width: 100%;
+            max-width: 700px;
+            aspect-ratio: 1;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+
+        .d3-chat-panel {
+            background: var(--surface);
+            border-left: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .d3-chat-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .d3-ai-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), #8B5CF6);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .d3-ai-avatar svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        .d3-ai-info h3 {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .d3-ai-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .d3-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .d3-message {
+            display: flex;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .d3-message-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+        }
+
+        .d3-message-avatar.ai {
+            background: linear-gradient(135deg, var(--accent), #8B5CF6);
+        }
+
+        .d3-message-avatar.user {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+        }
+
+        .d3-message-content {
+            flex: 1;
+        }
+
+        .d3-message-bubble {
+            padding: 12px 14px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            border-top-left-radius: 4px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .d3-message.user .d3-message-bubble {
+            background: var(--accent);
+            color: white;
+            border-radius: var(--radius-md);
+            border-top-right-radius: 4px;
+        }
+
+        .d3-message-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .d3-action-btn {
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: var(--text-primary);
+        }
+
+        .d3-action-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-subtle);
+        }
+
+        .d3-action-btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .d3-action-btn.primary:hover {
+            background: var(--accent-light);
+        }
+
+        .d3-result-card {
+            margin-top: 12px;
+            padding: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+        }
+
+        .d3-result-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .d3-result-icon {
+            width: 20px;
+            height: 20px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .d3-result-icon svg {
+            width: 12px;
+            height: 12px;
+            fill: white;
+        }
+
+        .d3-result-title {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .d3-result-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .d3-stat {
+            text-align: center;
+            padding: 10px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+        }
+
+        .d3-stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: var(--accent);
+        }
+
+        .d3-stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .d3-chat-input-area {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .d3-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+        }
+
+        .d3-input-wrapper:focus-within {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-glow);
+            background: var(--surface);
+        }
+
+        .d3-chat-input {
+            flex: 1;
+            padding: 4px 0;
+            font-size: 14px;
+            font-family: var(--font-sans);
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+        }
+
+        .d3-chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .d3-send-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .d3-send-btn:hover {
+            background: var(--accent-light);
+            transform: scale(1.05);
+        }
+
+        .d3-send-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+        .d3-quick-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .d3-quick-btn {
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.15s ease;
+        }
+
+        .d3-quick-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* UMAP Scatter Plot Simulation */
+        .umap-scatter {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .umap-dot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+
+        .umap-cluster-label {
+            position: absolute;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="design-switcher">
+        <h1>CellxGene VIP Redesign</h1>
+        <div class="design-tabs">
+            <button class="design-tab active" data-design="1">Sidebar Navigation</button>
+            <button class="design-tab" data-design="2">Bottom Drawer</button>
+            <button class="design-tab" data-design="3">AI Chat Panel</button>
+        </div>
+    </div>
+
+    <!-- Design 1: Collapsible Sidebar -->
+    <div class="design-container active" id="design-1">
+        <div class="design-1">
+            <aside class="d1-sidebar">
+                <div class="d1-sidebar-header">
+                    <div class="d1-logo">
+                        <div class="d1-logo-icon">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+                        </div>
+                        <div class="d1-logo-text">CellxGene <span>VIP</span></div>
+                    </div>
+                </div>
+
+                <nav class="d1-nav">
+                    <div class="d1-nav-section">
+                        <div class="d1-nav-header">
+                            <span>Visualization</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="d1-nav-items" style="max-height: 200px;">
+                            <div class="d1-nav-item active">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+                                Embedding Plot
+                            </div>
+                            <div class="d1-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18"/><rect x="14" y="8" width="7" height="13"/></svg>
+                                Violin Plot
+                            </div>
+                            <div class="d1-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                                Heatmap
+                            </div>
+                            <div class="d1-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="16" r="5"/></svg>
+                                Dot Plot
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d1-nav-section">
+                        <div class="d1-nav-header">
+                            <span>Analysis</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="d1-nav-items" style="max-height: 200px;">
+                            <div class="d1-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                                DEG Analysis
+                            </div>
+                            <div class="d1-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                                Marker Genes
+                            </div>
+                            <div class="d1-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                                Gene Specificity
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d1-nav-section">
+                        <div class="d1-nav-header">
+                            <span>Cell Communication</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="d1-nav-items" style="max-height: 200px;">
+                            <div class="d1-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="3"/><circle cx="19" cy="12" r="3"/><line x1="8" y1="12" x2="16" y2="12"/><polyline points="13 8 16 12 13 16"/></svg>
+                                CCC Analysis
+                            </div>
+                            <div class="d1-nav-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                Pathway Analysis
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d1-nav-section collapsed">
+                        <div class="d1-nav-header">
+                            <span>Settings</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        </div>
+                        <div class="d1-nav-items" style="max-height: 0;">
+                            <div class="d1-nav-item">Global Options</div>
+                            <div class="d1-nav-item">Save Session</div>
+                            <div class="d1-nav-item">Load Session</div>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="d1-selection-card">
+                    <div class="d1-selection-label">Current Selection</div>
+                    <div class="d1-selection-count">1,234 <span>cells</span></div>
+                    <div class="d1-selection-meta">From Cluster 3 (Macrophages)</div>
+                </div>
+            </aside>
+
+            <main class="d1-main">
+                <div class="d1-toolbar">
+                    <div class="d1-toolbar-left">
+                        <span class="d1-breadcrumb">Visualization &rarr; <strong>Embedding Plot</strong></span>
+                    </div>
+                    <div class="d1-toolbar-actions">
+                        <button class="d1-btn d1-btn-ghost">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Export
+                        </button>
+                        <button class="d1-btn d1-btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            Run Analysis
+                        </button>
+                    </div>
+                </div>
+
+                <div class="d1-plot-area">
+                    <div class="d1-plot">
+                        <div class="d1-plot-header">
+                            <span class="d1-plot-title">UMAP Projection</span>
+                            <div class="d1-plot-legend">
+                                <div class="d1-legend-item"><div class="d1-legend-dot" style="background: #5856D6;"></div> T Cells</div>
+                                <div class="d1-legend-item"><div class="d1-legend-dot" style="background: #34C759;"></div> B Cells</div>
+                                <div class="d1-legend-item"><div class="d1-legend-dot" style="background: #FF9500;"></div> Macrophages</div>
+                            </div>
+                        </div>
+                        <div class="umap-scatter" id="umap1"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Design 2: Bottom Drawer -->
+    <div class="design-container" id="design-2">
+        <div class="design-2">
+            <header class="d2-header">
+                <div class="d2-logo">
+                    <div class="d2-logo-mark">Cx</div>
+                    CellxGene VIP
+                </div>
+                <div class="d2-header-actions">
+                    <div class="d2-selection-pill">1,234 cells selected</div>
+                    <button class="d1-btn d1-btn-ghost">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    </button>
+                </div>
+            </header>
+
+            <main class="d2-main">
+                <div class="d2-plot-container">
+                    <div class="umap-scatter" id="umap2"></div>
+                </div>
+
+                <div class="d2-floating-toolbar">
+                    <button class="d2-toolbar-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18"/><rect x="14" y="8" width="7" height="13"/></svg>
+                        Violin
+                    </button>
+                    <button class="d2-toolbar-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                        Heatmap
+                    </button>
+                    <button class="d2-toolbar-btn highlight">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        DEG
+                    </button>
+                    <button class="d2-toolbar-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="3"/><circle cx="19" cy="12" r="3"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        CCC
+                    </button>
+                </div>
+
+                <div class="d2-drawer collapsed" id="drawer">
+                    <div class="d2-drawer-handle" onclick="toggleDrawer()"></div>
+                    <div class="d2-drawer-content">
+                        <div class="d2-drawer-header">
+                            <h2 class="d2-drawer-title">Differential Expression Analysis</h2>
+                            <button class="d2-drawer-close" onclick="toggleDrawer()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                        <div class="d2-form-grid">
+                            <div class="d2-form-group">
+                                <label class="d2-form-label">Compare Group</label>
+                                <select class="d2-select">
+                                    <option>Cluster 1 (T Cells)</option>
+                                    <option>Cluster 2 (B Cells)</option>
+                                    <option selected>Cluster 3 (Macrophages)</option>
+                                </select>
+                            </div>
+                            <div class="d2-form-group">
+                                <label class="d2-form-label">Against</label>
+                                <select class="d2-select">
+                                    <option>All other cells</option>
+                                    <option>Cluster 1 (T Cells)</option>
+                                    <option selected>Cluster 2 (B Cells)</option>
+                                </select>
+                            </div>
+                            <div class="d2-form-group">
+                                <label class="d2-form-label">Method</label>
+                                <select class="d2-select">
+                                    <option selected>Wilcoxon rank-sum</option>
+                                    <option>t-test</option>
+                                    <option>MAST</option>
+                                </select>
+                            </div>
+                            <button class="d2-run-btn">Run DEG Analysis</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Design 3: Chat Interface -->
+    <div class="design-container" id="design-3">
+        <div class="design-3">
+            <main class="d3-main">
+                <header class="d3-header">
+                    <div class="d3-header-left">
+                        <div class="d3-logo">
+                            <div class="d3-logo-icon"></div>
+                            CellxGene VIP
+                        </div>
+                        <div class="d3-view-toggle">
+                            <button class="d3-view-btn active">UMAP</button>
+                            <button class="d3-view-btn">tSNE</button>
+                            <button class="d3-view-btn">PCA</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="d3-plot-area">
+                    <div class="d3-plot">
+                        <div class="umap-scatter" id="umap3"></div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="d3-chat-panel">
+                <div class="d3-chat-header">
+                    <div class="d3-ai-avatar">
+                        <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A2.5 2.5 0 0 0 5 15.5 2.5 2.5 0 0 0 7.5 18a2.5 2.5 0 0 0 2.5-2.5A2.5 2.5 0 0 0 7.5 13m9 0a2.5 2.5 0 0 0-2.5 2.5 2.5 2.5 0 0 0 2.5 2.5 2.5 2.5 0 0 0 2.5-2.5 2.5 2.5 0 0 0-2.5-2.5z"/></svg>
+                    </div>
+                    <div class="d3-ai-info">
+                        <h3>Analysis Assistant</h3>
+                        <p>AI-powered exploration</p>
+                    </div>
+                </div>
+
+                <div class="d3-chat-messages">
+                    <div class="d3-message">
+                        <div class="d3-message-avatar ai"></div>
+                        <div class="d3-message-content">
+                            <div class="d3-message-bubble">
+                                I noticed you selected <strong>1,234 cells</strong> from Cluster 3 (Macrophages). Would you like me to help analyze this population?
+                            </div>
+                            <div class="d3-message-actions">
+                                <button class="d3-action-btn primary">Run DEG Analysis</button>
+                                <button class="d3-action-btn">Find Markers</button>
+                                <button class="d3-action-btn">Cell-Cell Communication</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d3-message user">
+                        <div class="d3-message-content">
+                            <div class="d3-message-bubble">
+                                Yes, run DEG comparing to B cells
+                            </div>
+                        </div>
+                        <div class="d3-message-avatar user"></div>
+                    </div>
+
+                    <div class="d3-message">
+                        <div class="d3-message-avatar ai"></div>
+                        <div class="d3-message-content">
+                            <div class="d3-message-bubble">
+                                Analysis complete! I found <strong>127 differentially expressed genes</strong> between Macrophages and B Cells.
+                            </div>
+                            <div class="d3-result-card">
+                                <div class="d3-result-header">
+                                    <div class="d3-result-icon">
+                                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                                    </div>
+                                    <span class="d3-result-title">DEG Analysis Results</span>
+                                </div>
+                                <div class="d3-result-stats">
+                                    <div class="d3-stat">
+                                        <div class="d3-stat-value">87</div>
+                                        <div class="d3-stat-label">Upregulated</div>
+                                    </div>
+                                    <div class="d3-stat">
+                                        <div class="d3-stat-value">40</div>
+                                        <div class="d3-stat-label">Downregulated</div>
+                                    </div>
+                                    <div class="d3-stat">
+                                        <div class="d3-stat-value">2.1x</div>
+                                        <div class="d3-stat-label">Avg Fold Change</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d3-message-actions">
+                                <button class="d3-action-btn">View Volcano Plot</button>
+                                <button class="d3-action-btn">View Heatmap</button>
+                                <button class="d3-action-btn">Export CSV</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d3-chat-input-area">
+                    <div class="d3-input-wrapper">
+                        <input type="text" class="d3-chat-input" placeholder="Ask about your data...">
+                        <button class="d3-send-btn">
+                            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                    <div class="d3-quick-actions">
+                        <button class="d3-quick-btn">Compare clusters</button>
+                        <button class="d3-quick-btn">Find markers</button>
+                        <button class="d3-quick-btn">Run CCC</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // Design switcher
+        document.querySelectorAll('.design-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.design-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.design-container').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('design-' + tab.dataset.design).classList.add('active');
+            });
+        });
+
+        // Collapsible nav sections
+        document.querySelectorAll('.d1-nav-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.parentElement.classList.toggle('collapsed');
+            });
+        });
+
+        // Drawer toggle
+        function toggleDrawer() {
+            document.getElementById('drawer').classList.toggle('collapsed');
+        }
+
+        // Generate UMAP scatter points
+        function generateUMAP(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const colors = ['#5856D6', '#34C759', '#FF9500', '#FF3B30', '#AF52DE'];
+            const clusterCenters = [
+                { x: 30, y: 30 },
+                { x: 70, y: 25 },
+                { x: 50, y: 70 },
+                { x: 25, y: 65 },
+                { x: 75, y: 65 }
+            ];
+
+            for (let i = 0; i < 300; i++) {
+                const clusterIdx = Math.floor(Math.random() * clusterCenters.length);
+                const center = clusterCenters[clusterIdx];
+                const dot = document.createElement('div');
+                dot.className = 'umap-dot';
+
+                const spread = 12;
+                const x = center.x + (Math.random() - 0.5) * spread * 2;
+                const y = center.y + (Math.random() - 0.5) * spread * 2;
+
+                dot.style.left = x + '%';
+                dot.style.top = y + '%';
+                dot.style.backgroundColor = colors[clusterIdx];
+                dot.style.opacity = 0.4 + Math.random() * 0.4;
+                dot.style.width = (3 + Math.random() * 3) + 'px';
+                dot.style.height = dot.style.width;
+
+                container.appendChild(dot);
+            }
+        }
+
+        // Initialize all UMAP plots
+        generateUMAP('umap1');
+        generateUMAP('umap2');
+        generateUMAP('umap3');
+    </script>
+</body>
+</html>

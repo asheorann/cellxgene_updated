@@ -1,4 +1,0 @@
-# Gene set generated on 2026-10-02T18:47:42 using cellxgene version 1.1.1
-# Input data file was cellxgene_VIP/cellxgene/example-dataset/pbmc3k.h5ad, which was last modified on 2026-09-29T18:00:25
-gene_set_name,gene_set_description,gene_symbol,gene_description
-testing set,,,

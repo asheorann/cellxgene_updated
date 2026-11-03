@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CellxGene VIP - Accurate Redesign Proposal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #FAFBFC;
+            --bg-sidebar: #FFFFFF;
+            --bg-hover: #F4F6F8;
+            --bg-active: #EEF2FF;
+
+            --text-primary: #1A1F36;
+            --text-secondary: #5E6687;
+            --text-muted: #8F95B2;
+
+            --accent: #5856D6;
+            --accent-light: #EEF2FF;
+            --accent-hover: #4F46E5;
+
+            --border: #E5E9F0;
+            --border-subtle: #EEF1F6;
+
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+
+            --radius: 6px;
+            --transition: 0.15s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: var(--text-primary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Design Switcher */
+        .design-switcher {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .design-switcher h1 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .design-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-primary);
+            padding: 4px;
+            border-radius: var(--radius);
+        }
+
+        .design-tab {
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .design-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .design-tab.active {
+            background: #fff;
+            color: var(--accent);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .design-container {
+            display: none;
+            margin-top: 50px;
+            height: calc(100vh - 50px);
+        }
+
+        .design-container.active {
+            display: flex;
+        }
+
+        /* =====================
+           SHARED: UMAP Mock Area
+           ===================== */
+        .umap-area {
+            flex: 1;
+            background: #1a1a2e;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .umap-mock {
+            width: 500px;
+            height: 500px;
+            position: relative;
+        }
+
+        .umap-dot {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.7;
+        }
+
+        .umap-label {
+            position: absolute;
+            color: rgba(255,255,255,0.6);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* =====================
+           DESIGN 1: Sidebar
+           ===================== */
+        .design-sidebar {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .vip-sidebar {
+            width: 240px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--accent), #8B5CF6);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .sidebar-title span {
+            color: var(--accent);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .nav-section {
+            margin-bottom: 4px;
+        }
+
+        .nav-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .nav-section-header:hover {
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+        }
+
+        .nav-section-header i {
+            font-size: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-section.collapsed .nav-section-header i {
+            transform: rotate(-90deg);
+        }
+
+        .nav-section-items {
+            overflow: hidden;
+            transition: max-height 0.25s ease;
+        }
+
+        .nav-section.collapsed .nav-section-items {
+            max-height: 0 !important;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item i {
+            width: 16px;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .nav-item.active i {
+            opacity: 1;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 8px 10px;
+        }
+
+        .sidebar-footer {
+            padding: 12px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .selection-card {
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent-light), #F8F7FF);
+            border-radius: var(--radius);
+            border: 1px solid rgba(88, 86, 214, 0.1);
+        }
+
+        .selection-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .selection-count {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .selection-count span {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        /* =====================
+           Selection Toolbar (Top)
+           ===================== */
+        .selection-toolbar {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .selection-toolbar-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+
+        .selection-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .selection-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .selection-box:hover {
+            border-color: var(--accent);
+        }
+
+        .selection-box.active {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .selection-box .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .selection-box .dot.sel1 {
+            background: #5856D6;
+        }
+
+        .selection-box .dot.sel2 {
+            background: #FF9500;
+        }
+
+        .selection-box .count {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .selection-box .label {
+            color: var(--text-secondary);
+        }
+
+        .selection-box .clear-btn {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--border);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 10px;
+            margin-left: 4px;
+            transition: var(--transition);
+        }
+
+        .selection-box .clear-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .lasso-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lasso-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            border-style: solid;
+        }
+
+        .lasso-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            border-style: solid;
+            color: white;
+        }
+
+        .lasso-btn i {
+            font-size: 12px;
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border);
+        }
+
+        .gene-sets-dropdown {
+            position: relative;
+        }
+
+        .gene-sets-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .gene-sets-btn:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+
+        .gene-sets-btn .badge {
+            background: var(--accent);
+            color: white;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* Content Panel (right side) */
+        .content-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        .content-header {
+            padding: 12px 20px;
+            background: #fff;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .content-breadcrumb {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .content-breadcrumb strong {
+            color: var(--text-primary);
+        }
+
+        .content-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: var(--radius);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .btn-ghost:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .content-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .panel-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .panel-card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-card-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .panel-card-body {
+            padding: 20px;
+        }
+
+        .form-row {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-select, .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 13px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(88, 86, 214, 0.1);
+        }
+
+        /* =====================
+           DESIGN 2: Bottom Drawer
+           ===================== */
+        .design-drawer {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .drawer-header {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .drawer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .drawer-logo-mark {
+            width: 26px;
+            height: 26px;
+            background: var(--text-primary);
+            border-radius: 5px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .drawer-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .drawer-header-right .selection-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .selection-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--accent-light);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        .selection-pill::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .drawer-main {
+            flex: 1;
+            position: relative;
+        }
+
+        .floating-toolbar {
+            position: absolute;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 2px;
+            padding: 6px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            border: 1px solid var(--border-subtle);
+            z-index: 100;
+        }
+
+        .toolbar-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .toolbar-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .toolbar-btn i {
+            font-size: 14px;
+        }
+
+        .drawer-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-top: 1px solid var(--border);
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -4px 24px rgba(0,0,0,0.08);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 50;
+        }
+
+        .drawer-panel.collapsed {
+            transform: translateY(calc(100% - 44px));
+        }
+
+        .drawer-handle {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .drawer-handle::before {
+            content: '';
+            width: 36px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 100px;
+            transition: var(--transition);
+        }
+
+        .drawer-handle:hover::before {
+            background: var(--text-muted);
+        }
+
+        .drawer-content {
+            padding: 0 24px 24px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .drawer-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .drawer-close {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-hover);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .drawer-close:hover {
+            background: var(--border);
+        }
+
+        .drawer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .drawer-grid .form-row {
+            margin-bottom: 0;
+        }
+
+        .drawer-actions {
+            grid-column: span 3;
+            margin-top: 8px;
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        /* Quick access grid for drawer */
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .quick-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 10px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .quick-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .quick-btn i {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="design-switcher">
+        <h1>VIP Redesign Proposal</h1>
+        <div class="design-tabs">
+            <button class="design-tab active" data-design="sidebar">Collapsible Sidebar</button>
+            <button class="design-tab" data-design="drawer">Bottom Drawer</button>
+        </div>
+    </div>
+
+    <!-- =====================
+         DESIGN 1: Collapsible Sidebar
+         ===================== -->
+    <div class="design-container active" id="design-sidebar">
+        <!-- Selection Toolbar -->
+        <div style="display: flex; flex-direction: column; width: 100%; height: 100%;">
+            <div class="selection-toolbar">
+                <span class="selection-toolbar-label">Selections</span>
+
+                <div class="selection-group">
+                    <div class="selection-box active">
+                        <span class="dot sel1"></span>
+                        <span class="label">Selection 1:</span>
+                        <span class="count">1,847</span>
+                        <span class="label">cells</span>
+                        <button class="clear-btn"><i class="fas fa-times"></i></button>
+                    </div>
+
+                    <div class="selection-box">
+                        <span class="dot sel2"></span>
+                        <span class="label">Selection 2:</span>
+                        <span class="count">866</span>
+                        <span class="label">cells</span>
+                        <button class="clear-btn"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+
+                <button class="lasso-btn active">
+                    <i class="fas fa-draw-polygon"></i>
+                    Lasso Tool
+                </button>
+
+                <div class="toolbar-divider"></div>
+
+                <span class="selection-toolbar-label">Gene Sets</span>
+
+                <div class="gene-sets-dropdown">
+                    <button class="gene-sets-btn">
+                        <i class="fas fa-layer-group"></i>
+                        My Gene Sets
+                        <span class="badge">3</span>
+                        <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i>
+                    </button>
+                </div>
+
+                <button class="btn btn-ghost" style="margin-left: auto;">
+                    <i class="fas fa-question-circle"></i> Help
+                </button>
+            </div>
+
+            <div class="design-sidebar" style="flex: 1;">
+                <aside class="vip-sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-logo">Cx</div>
+                    <div class="sidebar-title">CellxGene <span>VIP</span></div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <!-- Visualization -->
+                    <div class="nav-section">
+                        <div class="nav-section-header">
+                            <span>Visualization</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="nav-section-items" style="max-height: 400px;">
+                            <button class="nav-item"><i class="fas fa-chart-bar"></i> Violin</button>
+                            <button class="nav-item active"><i class="fas fa-th"></i> Heatmap</button>
+                            <button class="nav-item"><i class="fas fa-project-diagram"></i> Embedding Plot</button>
+                            <button class="nav-item"><i class="fas fa-circle"></i> Dot Plot</button>
+                            <button class="nav-item"><i class="fas fa-align-left"></i> Track Plot</button>
+                            <button class="nav-item"><i class="fas fa-wave-square"></i> Density Plot</button>
+                            <button class="nav-item"><i class="fas fa-braille"></i> Density Scatter</button>
+                            <button class="nav-item"><i class="fas fa-dna"></i> Dual Genes</button>
+                            <button class="nav-item"><i class="fas fa-random"></i> Sankey Diagram</button>
+                            <button class="nav-item"><i class="fas fa-chart-area"></i> Stacked Barplot</button>
+                        </div>
+                    </div>
+
+                    <!-- Analysis -->
+                    <div class="nav-section">
+                        <div class="nav-section-header">
+                            <span>Analysis</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="nav-section-items" style="max-height: 300px;">
+                            <button class="nav-item"><i class="fas fa-plus"></i> Add Genes</button>
+                            <button class="nav-item"><i class="fas fa-bullseye"></i> Gene Specificity</button>
+                            <button class="nav-item"><i class="fas fa-search"></i> Gene Detected</button>
+                            <button class="nav-item"><i class="fas fa-chart-line"></i> DEG</button>
+                            <button class="nav-item"><i class="fas fa-star"></i> Marker Genes</button>
+                        </div>
+                    </div>
+
+                    <!-- Cell Communication -->
+                    <div class="nav-section">
+                        <div class="nav-section-header">
+                            <span>Cell Communication</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="nav-section-items" style="max-height: 100px;">
+                            <button class="nav-item"><i class="fas fa-exchange-alt"></i> CCC Analysis</button>
+                        </div>
+                    </div>
+
+                    <!-- Spatial -->
+                    <div class="nav-section collapsed">
+                        <div class="nav-section-header">
+                            <span>Spatial</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="nav-section-items" style="max-height: 0;">
+                            <button class="nav-item"><i class="fas fa-map"></i> Spatial Transcriptomics</button>
+                            <button class="nav-item"><i class="fas fa-microscope"></i> CosMx</button>
+                            <button class="nav-item"><i class="fas fa-border-all"></i> Visium</button>
+                        </div>
+                    </div>
+
+                    <div class="nav-divider"></div>
+
+                    <!-- Settings -->
+                    <div class="nav-section collapsed">
+                        <div class="nav-section-header">
+                            <span>Settings & Tools</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="nav-section-items" style="max-height: 0;">
+                            <button class="nav-item"><i class="fas fa-cog"></i> Global Setting</button>
+                            <button class="nav-item"><i class="fas fa-tags"></i> Comb. & Abbr.</button>
+                            <button class="nav-item"><i class="fas fa-save"></i> Save Session</button>
+                            <button class="nav-item"><i class="fas fa-folder-open"></i> Load Session</button>
+                            <button class="nav-item"><i class="fas fa-terminal"></i> Command Line</button>
+                            <button class="nav-item"><i class="fas fa-check-double"></i> Check Annotations</button>
+                            <button class="nav-item"><i class="fas fa-paint-brush"></i> Brush</button>
+                            <button class="nav-item"><i class="fas fa-sync"></i> Sync</button>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="selection-card">
+                        <div class="selection-label">Current Selection</div>
+                        <div class="selection-count">2,713 <span>cells</span></div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="content-panel">
+                <div class="content-header">
+                    <span class="content-breadcrumb">Visualization &rarr; <strong>Heatmap</strong></span>
+                    <div class="content-actions">
+                        <button class="btn btn-ghost"><i class="fas fa-download"></i> Export</button>
+                        <button class="btn btn-primary"><i class="fas fa-play"></i> Plot</button>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <div class="panel-card">
+                        <div class="panel-card-header">
+                            <h3>Heatmap Options</h3>
+                            <button class="btn btn-ghost"><i class="fas fa-question-circle"></i></button>
+                        </div>
+                        <div class="panel-card-body">
+                            <div class="form-row">
+                                <label class="form-label">Annotation</label>
+                                <select class="form-select">
+                                    <option>louvain</option>
+                                    <option>cell_type</option>
+                                    <option>batch</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <label class="form-label">Genes</label>
+                                <input type="text" class="form-input" placeholder="Enter genes separated by comma...">
+                            </div>
+                            <div class="form-row">
+                                <label class="form-label">Colormap</label>
+                                <select class="form-select">
+                                    <option>viridis</option>
+                                    <option>plasma</option>
+                                    <option>inferno</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="umap-area">
+                    <div class="umap-mock" id="umap1"></div>
+                </div>
+            </div>
+        </div><!-- end flex wrapper -->
+    </div><!-- end design-sidebar -->
+
+    <!-- =====================
+         DESIGN 2: Bottom Drawer
+         ===================== -->
+    <div class="design-container" id="design-drawer">
+        <div class="design-drawer">
+            <header class="drawer-header">
+                <div class="drawer-logo">
+                    <div class="drawer-logo-mark">Cx</div>
+                    CellxGene VIP
+                </div>
+                <div class="drawer-header-right" style="flex: 1; justify-content: flex-start; margin-left: 24px;">
+                    <div class="selection-group">
+                        <div class="selection-box active">
+                            <span class="dot sel1"></span>
+                            <span class="label">Sel 1:</span>
+                            <span class="count">1,847</span>
+                            <button class="clear-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="selection-box">
+                            <span class="dot sel2"></span>
+                            <span class="label">Sel 2:</span>
+                            <span class="count">866</span>
+                            <button class="clear-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <button class="lasso-btn active">
+                        <i class="fas fa-draw-polygon"></i> Lasso
+                    </button>
+                    <div class="toolbar-divider"></div>
+                    <button class="gene-sets-btn">
+                        <i class="fas fa-layer-group"></i> Gene Sets <span class="badge">3</span>
+                    </button>
+                </div>
+                <button class="btn btn-ghost"><i class="fas fa-cog"></i></button>
+            </header>
+
+            <main class="drawer-main">
+                <div class="umap-area" style="position: absolute; inset: 0;">
+                    <div class="umap-mock" id="umap2"></div>
+                </div>
+
+                <div class="floating-toolbar">
+                    <button class="toolbar-btn"><i class="fas fa-chart-bar"></i> Violin</button>
+                    <button class="toolbar-btn active"><i class="fas fa-th"></i> Heatmap</button>
+                    <button class="toolbar-btn"><i class="fas fa-chart-line"></i> DEG</button>
+                    <button class="toolbar-btn"><i class="fas fa-circle"></i> Dot Plot</button>
+                    <button class="toolbar-btn"><i class="fas fa-exchange-alt"></i> CCC</button>
+                    <button class="toolbar-btn"><i class="fas fa-ellipsis-h"></i></button>
+                </div>
+
+                <div class="drawer-panel" id="drawer">
+                    <div class="drawer-handle" onclick="toggleDrawer()"></div>
+                    <div class="drawer-content">
+                        <div class="drawer-title">
+                            <span><i class="fas fa-th" style="margin-right: 8px; color: var(--accent);"></i> Heatmap</span>
+                            <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
+                        </div>
+
+                        <div class="quick-grid">
+                            <button class="quick-btn"><i class="fas fa-chart-bar"></i> Violin</button>
+                            <button class="quick-btn"><i class="fas fa-project-diagram"></i> Embedding</button>
+                            <button class="quick-btn"><i class="fas fa-wave-square"></i> Density</button>
+                            <button class="quick-btn"><i class="fas fa-random"></i> Sankey</button>
+                            <button class="quick-btn"><i class="fas fa-star"></i> Markers</button>
+                            <button class="quick-btn"><i class="fas fa-plus"></i> Add Genes</button>
+                            <button class="quick-btn"><i class="fas fa-map"></i> Spatial</button>
+                            <button class="quick-btn"><i class="fas fa-cog"></i> Settings</button>
+                        </div>
+
+                        <div class="drawer-grid">
+                            <div class="form-row">
+                                <label class="form-label">Annotation</label>
+                                <select class="form-select">
+                                    <option>louvain</option>
+                                    <option>cell_type</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <label class="form-label">Genes</label>
+                                <input type="text" class="form-input" placeholder="CST3, NKG7, PPBP...">
+                            </div>
+                            <div class="form-row">
+                                <label class="form-label">Colormap</label>
+                                <select class="form-select">
+                                    <option>viridis</option>
+                                    <option>plasma</option>
+                                </select>
+                            </div>
+                            <div class="drawer-actions">
+                                <button class="btn btn-primary btn-block"><i class="fas fa-play"></i> Generate Heatmap</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Design switcher
+        document.querySelectorAll('.design-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.design-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.design-container').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('design-' + tab.dataset.design).classList.add('active');
+            });
+        });
+
+        // Collapsible nav sections
+        document.querySelectorAll('.nav-section-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.parentElement.classList.toggle('collapsed');
+            });
+        });
+
+        // Drawer toggle
+        function toggleDrawer() {
+            document.getElementById('drawer').classList.toggle('collapsed');
+        }
+
+        // Generate UMAP dots
+        function generateUMAP(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const colors = ['#5856D6', '#34C759', '#FF9500', '#FF3B30', '#AF52DE', '#00C7BE'];
+            const clusters = [
+                { x: 25, y: 30, label: 'T Cells' },
+                { x: 70, y: 25, label: 'B Cells' },
+                { x: 50, y: 65, label: 'Monocytes' },
+                { x: 20, y: 70, label: 'NK Cells' },
+                { x: 80, y: 60, label: 'DC' },
+                { x: 45, y: 35, label: 'Platelets' }
+            ];
+
+            clusters.forEach((cluster, ci) => {
+                // Add label
+                const label = document.createElement('div');
+                label.className = 'umap-label';
+                label.textContent = cluster.label;
+                label.style.left = cluster.x + '%';
+                label.style.top = (cluster.y - 8) + '%';
+                container.appendChild(label);
+
+                // Add dots
+                for (let i = 0; i < 60; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'umap-dot';
+                    const spread = 10;
+                    const x = cluster.x + (Math.random() - 0.5) * spread * 2;
+                    const y = cluster.y + (Math.random() - 0.5) * spread * 2;
+                    dot.style.left = x + '%';
+                    dot.style.top = y + '%';
+                    dot.style.backgroundColor = colors[ci];
+                    dot.style.width = (3 + Math.random() * 2) + 'px';
+                    dot.style.height = dot.style.width;
+                    dot.style.opacity = 0.5 + Math.random() * 0.4;
+                    container.appendChild(dot);
+                }
+            });
+        }
+
+        generateUMAP('umap1');
+        generateUMAP('umap2');
+    </script>
+</body>
+</html>

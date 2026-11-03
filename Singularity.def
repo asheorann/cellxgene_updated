@@ -1,0 +1,222 @@
+Bootstrap: docker
+From: continuumio/miniconda3:latest
+
+%labels
+    Author Anushka
+    Version 1.1
+    Description CellxGene VIP with Cell-Cell Communication (CCC) analysis
+    Institution Penn Vet
+
+%help
+    CellxGene VIP Container for Single-Cell RNA-seq Visualization
+    ==============================================================
+
+    This container provides CellxGene with the VIP (Visualization in Plugin)
+    extension, including Cell-Cell Communication analysis via LIANA.
+
+    USAGE:
+      # Basic usage
+      singularity run cellxgene_vip.sif /path/to/data.h5ad
+
+      # With custom port
+      singularity run cellxgene_vip.sif /path/to/data.h5ad 5006
+
+      # Bind mount your data directory
+      singularity run --bind /your/data:/data cellxgene_vip.sif /data/file.h5ad
+
+      # Using exec for more control
+      singularity exec cellxgene_vip.sif cellxgene launch /data/test.h5ad --host 0.0.0.0 --port 5005
+
+    ENVIRONMENT VARIABLES:
+      PORT - Server port (default: 5005)
+      HOST - Server host (default: 0.0.0.0)
+
+    FEATURES:
+      - CellxGene data explorer
+      - VIP visualization extensions (violin, heatmap, dot plot, etc.)
+      - Cell-Cell Communication analysis (LIANA/CellPhoneDB)
+      - R-based visualizations (ComplexHeatmap, fgsea, etc.)
+
+%environment
+    export PATH=/opt/conda/envs/VIP/bin:$PATH
+    export CONDA_DEFAULT_ENV=VIP
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    # R library path
+    export R_LIBS_USER=/opt/conda/envs/VIP/lib/R/library
+
+%files
+    # Copy the entire VIP directory
+    cellxgene_VIP /opt/cellxgene_VIP
+
+%post
+    # Update system and install dependencies
+    apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        libhdf5-dev \
+        libffi-dev \
+        libssl-dev \
+        libcurl4-openssl-dev \
+        libxml2-dev \
+        libpng-dev \
+        libjpeg-dev \
+        libcairo2-dev \
+        libxt-dev \
+        r-base \
+        r-base-dev \
+        curl \
+        wget \
+        git \
+        && rm -rf /var/lib/apt/lists/*
+
+    # Initialize conda
+    . /opt/conda/etc/profile.d/conda.sh
+
+    # Create VIP environment with Python 3.8
+    conda create -n VIP python=3.8 -y
+    conda activate VIP
+
+    # Install cellxgene from the VIP-modified source
+    cd /opt/cellxgene_VIP/cellxgene
+    pip install --no-cache-dir .
+
+    # Install core Python dependencies
+    pip install --no-cache-dir \
+        'anndata>=0.7.6,<0.11' \
+        'scanpy>=1.7.0' \
+        'pandas>=1.3.0,<2.1' \
+        'numpy>=1.20.0,<2.0' \
+        'scipy>=1.7.0' \
+        'scikit-learn>=0.24.0' \
+        'matplotlib>=3.4.0' \
+        'seaborn>=0.11.0' \
+        'h5py>=3.0.0' \
+        'plotly>=5.0.0' \
+        'kaleido'
+
+    # Install LIANA for Cell-Cell Communication
+    pip install --no-cache-dir \
+        'liana>=0.1.0' \
+        'plotnine>=0.10.0'
+
+    # Install additional dependencies
+    pip install --no-cache-dir \
+        'flask>=2.0.0' \
+        'numexpr>=2.7.3' \
+        'tables>=3.6.0' \
+        'xlsxwriter' \
+        'openpyxl'
+
+    # Install R packages for VIP visualizations
+    echo "Installing R packages..."
+
+    # Install from CRAN
+    R -e "options(repos = c(CRAN = 'https://cloud.r-project.org/')); \
+          install.packages(c( \
+            'ggplot2', \
+            'dplyr', \
+            'tidyr', \
+            'pheatmap', \
+            'circlize', \
+            'RColorBrewer', \
+            'viridis', \
+            'gridExtra', \
+            'cowplot', \
+            'ggrepel', \
+            'reshape2' \
+          ), quiet = TRUE)"
+
+    # Install Bioconductor packages
+    R -e "if (!require('BiocManager', quietly = TRUE)) { \
+            install.packages('BiocManager', repos = 'https://cloud.r-project.org/') \
+          }; \
+          BiocManager::install(c('ComplexHeatmap', 'fgsea'), ask = FALSE, update = FALSE)"
+
+    # Run the VIP interface update script to install VIP files
+    cd /opt/cellxgene_VIP
+    chmod +x update.VIPInterface.sh
+    bash update.VIPInterface.sh setup
+
+    # Clean up to reduce image size
+    conda clean -afy
+    pip cache purge
+    rm -rf /root/.cache
+    rm -rf /tmp/*
+
+    echo "VIP installation complete!"
+
+%runscript
+    #!/bin/bash
+    # Default entrypoint: launch cellxgene with provided h5ad file
+
+    # Activate conda environment
+    . /opt/conda/etc/profile.d/conda.sh
+    conda activate VIP
+
+    PORT="${PORT:-5005}"
+    HOST="${HOST:-0.0.0.0}"
+
+    if [ -z "$1" ]; then
+        echo "============================================"
+        echo "  CellxGene VIP Container"
+        echo "============================================"
+        echo ""
+        echo "Usage: singularity run cellxgene_vip.sif /path/to/data.h5ad [port]"
+        echo ""
+        echo "Examples:"
+        echo "  singularity run cellxgene_vip.sif /data/mydata.h5ad"
+        echo "  singularity run cellxgene_vip.sif /data/mydata.h5ad 5006"
+        echo "  singularity run --bind /mydata:/data cellxgene_vip.sif /data/file.h5ad"
+        echo ""
+        echo "Environment variables:"
+        echo "  PORT=5005  (default port)"
+        echo "  HOST=0.0.0.0  (default host)"
+        echo ""
+        exit 0
+    fi
+
+    DATA_FILE="$1"
+    if [ -n "$2" ]; then
+        PORT="$2"
+    fi
+
+    # Check if file exists
+    if [ ! -f "$DATA_FILE" ]; then
+        echo "ERROR: Data file not found: $DATA_FILE"
+        echo ""
+        echo "If your data is outside the container, use --bind:"
+        echo "  singularity run --bind /your/data:/data cellxgene_vip.sif /data/file.h5ad"
+        exit 1
+    fi
+
+    echo "============================================"
+    echo "  CellxGene VIP"
+    echo "============================================"
+    echo "  Data: $DATA_FILE"
+    echo "  Port: $PORT"
+    echo "  URL:  http://localhost:$PORT"
+    echo "============================================"
+    echo ""
+
+    exec cellxgene launch "$DATA_FILE" --host "$HOST" --port "$PORT"
+
+%test
+    # Verify installation
+    echo "Testing CellxGene VIP installation..."
+
+    . /opt/conda/etc/profile.d/conda.sh
+    conda activate VIP
+
+    # Test Python packages
+    python -c "import scanpy; print(f'scanpy: {scanpy.__version__}')"
+    python -c "import anndata; print(f'anndata: {anndata.__version__}')"
+    python -c "import liana; print(f'liana: {liana.__version__}')"
+    python -c "import pandas; print(f'pandas: {pandas.__version__}')"
+
+    # Test cellxgene
+    cellxgene --version
+
+    # Test R packages
+    R -e "library(ComplexHeatmap); library(fgsea); cat('R packages OK\n')"
+
+    echo "All tests passed!"

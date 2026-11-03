@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Font Preview - Choose Your Font</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #F8FAFC;
+      padding: 40px;
+      color: #1E293B;
+    }
+
+    h1 {
+      font-family: system-ui;
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: #1E293B;
+    }
+
+    .subtitle {
+      font-family: system-ui;
+      font-size: 16px;
+      color: #64748B;
+      margin-bottom: 40px;
+    }
+
+    .font-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .font-card {
+      background: white;
+      border: 2px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .font-card:hover {
+      border-color: #6366F1;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+    }
+
+    .font-card.selected {
+      border-color: #6366F1;
+      background: #EEF2FF;
+    }
+
+    .font-name {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6366F1;
+      margin-bottom: 16px;
+      font-family: system-ui;
+    }
+
+    .font-sample {
+      margin-bottom: 20px;
+    }
+
+    .font-sample h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1E293B;
+    }
+
+    .font-sample p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748B;
+    }
+
+    .font-ui-demo {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid #E2E8F0;
+    }
+
+    .demo-btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      background: #6366F1;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .demo-btn-outline {
+      background: white;
+      color: #64748B;
+      border: 1px solid #E2E8F0;
+    }
+
+    .demo-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94A3B8;
+    }
+
+    .demo-text {
+      font-size: 13px;
+      color: #1E293B;
+    }
+
+    /* Font families */
+    .font-inter * { font-family: 'Inter', sans-serif !important; }
+    .font-dm-sans * { font-family: 'DM Sans', sans-serif !important; }
+    .font-ibm-plex * { font-family: 'IBM Plex Sans', sans-serif !important; }
+    .font-nunito * { font-family: 'Nunito Sans', sans-serif !important; }
+    .font-source-sans * { font-family: 'Source Sans 3', sans-serif !important; }
+    .font-jakarta * { font-family: 'Plus Jakarta Sans', sans-serif !important; }
+    .font-outfit * { font-family: 'Outfit', sans-serif !important; }
+    .font-manrope * { font-family: 'Manrope', sans-serif !important; }
+
+    .instructions {
+      margin-top: 40px;
+      padding: 20px;
+      background: #FEF3C7;
+      border-radius: 8px;
+      font-family: system-ui;
+    }
+
+    .instructions h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .instructions p {
+      font-size: 13px;
+      color: #92400E;
+    }
+  </style>
+</head>
+<body>
+  <h1>Choose Your Font</h1>
+  <p class="subtitle">Click on a font card to see how it looks. Tell me which number you prefer!</p>
+
+  <div class="font-grid">
+
+    <!-- 1. Inter -->
+    <div class="font-card font-inter" onclick="this.classList.toggle('selected')">
+      <div class="font-name">1. Inter (Recommended)</div>
+      <div class="font-sample">
+        <h2>CellxGene VIP</h2>
+        <p>Visualize single-cell RNA sequencing data with advanced analysis tools. Select cells, explore gene expression, and generate publication-ready figures.</p>
+      </div>
+      <div class="font-ui-demo">
+        <button class="demo-btn">Run Analysis</button>
+        <button class="demo-btn demo-btn-outline">Cancel</button>
+        <span class="demo-label">Gene:</span>
+        <span class="demo-text">CD4, CD8A, FOXP3</span>
+      </div>
+    </div>
+
+    <!-- 2. DM Sans -->
+    <div class="font-card font-dm-sans" onclick="this.classList.toggle('selected')">
+      <div class="font-name">2. DM Sans</div>
+      <div class="font-sample">
+        <h2>CellxGene VIP</h2>
+        <p>Visualize single-cell RNA sequencing data with advanced analysis tools. Select cells, explore gene expression, and generate publication-ready figures.</p>
+      </div>
+      <div class="font-ui-demo">
+        <button class="demo-btn">Run Analysis</button>
+        <button class="demo-btn demo-btn-outline">Cancel</button>
+        <span class="demo-label">Gene:</span>
+        <span class="demo-text">CD4, CD8A, FOXP3</span>
+      </div>
+    </div>
+
+    <!-- 3. Plus Jakarta Sans -->
+    <div class="font-card font-jakarta" onclick="this.classList.toggle('selected')">
+      <div class="font-name">3. Plus Jakarta Sans</div>
+      <div class="font-sample">
+        <h2>CellxGene VIP</h2>
+        <p>Visualize single-cell RNA sequencing data with advanced analysis tools. Select cells, explore gene expression, and generate publication-ready figures.</p>
+      </div>
+      <div class="font-ui-demo">
+        <button class="demo-btn">Run Analysis</button>
+        <button class="demo-btn demo-btn-outline">Cancel</button>
+        <span class="demo-label">Gene:</span>
+        <span class="demo-text">CD4, CD8A, FOXP3</span>
+      </div>
+    </div>
+
+    <!-- 4. IBM Plex Sans -->
+    <div class="font-card font-ibm-plex" onclick="this.classList.toggle('selected')">
+      <div class="font-name">4. IBM Plex Sans</div>
+      <div class="font-sample">
+        <h2>CellxGene VIP</h2>
+        <p>Visualize single-cell RNA sequencing data with advanced analysis tools. Select cells, explore gene expression, and generate publication-ready figures.</p>
+      </div>
+      <div class="font-ui-demo">
+        <button class="demo-btn">Run Analysis</button>
+        <button class="demo-btn demo-btn-outline">Cancel</button>
+        <span class="demo-label">Gene:</span>
+        <span class="demo-text">CD4, CD8A, FOXP3</span>
+      </div>
+    </div>
+
+    <!-- 5. Outfit -->
+    <div class="font-card font-outfit" onclick="this.classList.toggle('selected')">
+      <div class="font-name">5. Outfit</div>
+      <div class="font-sample">
+        <h2>CellxGene VIP</h2>
+        <p>Visualize single-cell RNA sequencing data with advanced analysis tools. Select cells, explore gene expression, and generate publication-ready figures.</p>
+      </div>
+      <div class="font-ui-demo">
+        <button class="demo-btn">Run Analysis</button>
+        <button class="demo-btn demo-btn-outline">Cancel</button>
+        <span class="demo-label">Gene:</span>
+        <span class="demo-text">CD4, CD8A, FOXP3</span>
+      </div>
+    </div>
+
+    <!-- 6. Manrope -->
+    <div class="font-card font-manrope" onclick="this.classList.toggle('selected')">
+      <div class="font-name">6. Manrope</div>
+      <div class="font-sample">
+        <h2>CellxGene VIP</h2>
+        <p>Visualize single-cell RNA sequencing data with advanced analysis tools. Select cells, explore gene expression, and generate publication-ready figures.</p>
+      </div>
+      <div class="font-ui-demo">
+        <button class="demo-btn">Run Analysis</button>
+        <button class="demo-btn demo-btn-outline">Cancel</button>
+        <span class="demo-label">Gene:</span>
+        <span class="demo-text">CD4, CD8A, FOXP3</span>
+      </div>
+    </div>
+
+    <!-- 7. Source Sans 3 -->
+    <div class="font-card font-source-sans" onclick="this.classList.toggle('selected')">
+      <div class="font-name">7. Source Sans 3</div>
+      <div class="font-sample">
+        <h2>CellxGene VIP</h2>
+        <p>Visualize single-cell RNA sequencing data with advanced analysis tools. Select cells, explore gene expression, and generate publication-ready figures.</p>
+      </div>
+      <div class="font-ui-demo">
+        <button class="demo-btn">Run Analysis</button>
+        <button class="demo-btn demo-btn-outline">Cancel</button>
+        <span class="demo-label">Gene:</span>
+        <span class="demo-text">CD4, CD8A, FOXP3</span>
+      </div>
+    </div>
+
+    <!-- 8. Nunito Sans -->
+    <div class="font-card font-nunito" onclick="this.classList.toggle('selected')">
+      <div class="font-name">8. Nunito Sans</div>
+      <div class="font-sample">
+        <h2>CellxGene VIP</h2>
+        <p>Visualize single-cell RNA sequencing data with advanced analysis tools. Select cells, explore gene expression, and generate publication-ready figures.</p>
+      </div>
+      <div class="font-ui-demo">
+        <button class="demo-btn">Run Analysis</button>
+        <button class="demo-btn demo-btn-outline">Cancel</button>
+        <span class="demo-label">Gene:</span>
+        <span class="demo-text">CD4, CD8A, FOXP3</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="instructions">
+    <h3>How to choose:</h3>
+    <p>Just tell me the number (1-8) and I'll update the theme! Each font has a slightly different feel - Inter is clean & neutral, DM Sans is geometric, Jakarta is modern & friendly, IBM Plex is technical, etc.</p>
+  </div>
+
+</body>
+</html>
