@@ -507,10 +507,12 @@ function CCCrun(){
         $('#CCCnote').html(resD[2].map(function(n){ return $('<div>').text(n).html(); }).join('<br>'));
       }
 
-      // Display image
+      // Display image and store for download
       if(resD[1] && resD[1].length > 100){
+        CCClastImage = resD[1];
         showImg('CCCfig', resD[1]);
       } else {
+        CCClastImage = null;
         $("#CCCfig").html("<i>No visualization available (table above shows results)</i>");
       }
 
@@ -526,6 +528,9 @@ function CCCrun(){
           : " - absolute values, cells pooled per condition; descriptive only";
       }
       $("#CCCresultInfo").text(info);
+
+      // Show visualization controls with filter options
+      CCCshowVisControls();
     },
     error: function(request, status, error){
       $('#CCCnote').html("Request failed: " + error);
@@ -638,6 +643,81 @@ function CCCexportCSV(){
   var url = URL.createObjectURL(blob);
   link.setAttribute("href", url);
   link.setAttribute("download", "ccc_results.csv");
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Store the last base64 image for downloading
+var CCClastImage = null;
+
+// Show visualization controls and populate filter dropdowns
+function CCCshowVisControls(){
+  if(!CCClastResults || !CCClastResults.data || CCClastResults.data.length === 0){
+    $("#CCCvisControls").hide();
+    return;
+  }
+
+  // Get unique sources and targets from results
+  var sources = new Set();
+  var targets = new Set();
+  CCClastResults.data.forEach(function(row){
+    if(row.source) sources.add(row.source);
+    if(row.target) targets.add(row.target);
+  });
+
+  // Populate filter dropdowns
+  var srcSelect = $("#CCCfilterSource").empty().append('<option value="">All sources</option>');
+  var tgtSelect = $("#CCCfilterTarget").empty().append('<option value="">All targets</option>');
+
+  Array.from(sources).sort().forEach(function(s){
+    srcSelect.append($('<option>').val(s).text(s));
+  });
+  Array.from(targets).sort().forEach(function(t){
+    tgtSelect.append($('<option>').val(t).text(t));
+  });
+
+  $("#CCCvisControls").show();
+}
+
+// Update visualization based on current filter settings
+function CCCupdateVis(){
+  // This will re-request the plot with new parameters
+  // For now, just filter the table view
+  if(!CCClastResults || !CCClastResults.data) return;
+
+  var source = $("#CCCfilterSource").val();
+  var target = $("#CCCfilterTarget").val();
+  var topN = parseInt($("#CCCvisTopN").val()) || 20;
+
+  // Filter data
+  var filtered = CCClastResults.data.filter(function(row){
+    if(source && row.source !== source) return false;
+    if(target && row.target !== target) return false;
+    return true;
+  }).slice(0, topN);
+
+  // Update table with filtered data
+  if($.fn.DataTable.isDataTable('#CCCtable')){
+    $('#CCCtable').DataTable().clear().rows.add(filtered).draw();
+  }
+
+  // Update result info
+  $("#CCCresultInfo").text(filtered.length + " of " + CCClastResults.data.length + " interactions shown");
+}
+
+// Download the current visualization
+function CCCdownloadFig(){
+  if(!CCClastImage){
+    alert("No visualization to download. Run analysis first.");
+    return;
+  }
+
+  // Create download link for the base64 image
+  var link = document.createElement("a");
+  link.href = "data:image/png;base64," + CCClastImage;
+  link.download = "ccc_plot.png";
   link.style.visibility = "hidden";
   document.body.appendChild(link);
   link.click();

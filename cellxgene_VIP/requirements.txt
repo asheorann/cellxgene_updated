@@ -1,7 +1,30 @@
-cellxgene>=0.15
-scanpy>=1.5.0
-diffxpy>=0.7.4
-anndata>=0.7.4
-plotly>=4.8.1
-seurat==3.0.2
-liana>=1.0.0
+# CellxGene VIP with CCC Extension - Requirements
+# Updated to match current working environment (Nov 2026)
+
+# Core cellxgene (installed from local source)
+# cellxgene is installed from ./cellxgene directory
+
+# Data handling
+anndata>=0.10.0
+scanpy>=1.12.0
+pandas>=2.0.0
+numpy>=2.0.0
+scipy>=1.10.0
+h5py>=3.10.0
+
+# Visualization
+matplotlib>=3.8.0
+seaborn>=0.13.0
+plotly>=5.0.0
+plotnine>=0.13.0
+
+# Cell-Cell Communication
+liana>=0.1.9
+
+# Web framework
+flask>=3.0.0
+
+# Utilities
+numexpr>=2.8.0
+openpyxl>=3.1.0
+xlsxwriter>=3.1.0

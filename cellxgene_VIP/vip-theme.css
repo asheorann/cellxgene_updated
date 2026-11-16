@@ -359,32 +359,36 @@ p, span, div, label, input, select, button, textarea,
   border-radius: var(--vip-radius) !important;
   box-shadow: var(--vip-shadow-lg) !important;
   border: 1px solid var(--vip-border) !important;
-  min-width: 300px !important;
+  min-width: 320px !important;
 }
 
 /* Panel header - WHITE background, not gray */
 .jsPanel-hdr {
   background: white !important;
   border-bottom: 1px solid var(--vip-border) !important;
-  min-height: 44px !important;
+  min-height: 48px !important;
   height: auto !important;
   overflow: visible !important;
+  padding: 0 12px !important;
 }
 
 /* Header bar - remove gray background */
 .jsPanel-headerbar {
   background: white !important;
   overflow: visible !important;
-  min-width: 280px !important;
+  min-width: 300px !important;
   height: auto !important;
-  min-height: 40px !important;
+  min-height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 /* Title bar - don't clip */
 .jsPanel-titlebar {
   overflow: visible !important;
   flex-shrink: 0 !important;
-  min-width: 260px !important;
+  flex-grow: 1 !important;
+  min-width: 220px !important;
   height: auto !important;
 }
 
@@ -402,9 +406,27 @@ p, span, div, label, input, select, button, textarea,
   padding: 8px 0 !important;
 }
 
-/* Panel control buttons - better spacing */
+/* Panel control buttons - wider spacing, don't clip arrows */
 .jsPanel-hdr .jsPanel-controlbar {
-  margin-left: 20px !important;
+  margin-left: 16px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  gap: 4px !important;
+}
+
+/* Control bar buttons - bigger click area */
+.jsPanel-controlbar .jsPanel-btn {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 4px !important;
+}
+
+.jsPanel-controlbar .jsPanel-btn:hover {
+  background: var(--vip-bg-hover) !important;
 }
 
 /* Panel control buttons */
@@ -1073,4 +1095,157 @@ body {
   letter-spacing: 0.3px !important;
   margin-bottom: 6px !important;
   display: block !important;
+}
+
+/* =============================================
+   COLLAPSED SIDEBAR EXPAND BUTTON
+   ============================================= */
+/* DISABLED: Custom sidebar collapse buttons were causing issues.
+   CellxGene already has built-in collapse functionality. */
+
+/* =============================================
+   LASSO / TOOL SELECTION HIGHLIGHT
+   ============================================= */
+
+/* Active/selected tool button - purple highlight */
+.bp5-button.bp5-active,
+.bp4-button.bp4-active,
+.bp3-button.bp3-active,
+.bp5-button[aria-pressed="true"],
+.bp4-button[aria-pressed="true"],
+.bp5-button.bp5-intent-primary.bp5-active,
+.bp4-button.bp4-intent-primary.bp4-active,
+button[data-testid*="lasso"].bp5-active,
+button[data-testid*="select"].bp5-active {
+  background: var(--vip-accent) !important;
+  color: white !important;
+  box-shadow: 0 0 0 2px var(--vip-accent-light) !important;
+}
+
+/* Toolbar button group - selected state */
+.bp5-button-group .bp5-button.bp5-active,
+.bp4-button-group .bp4-button.bp4-active {
+  background: var(--vip-accent) !important;
+  color: white !important;
+  z-index: 1 !important;
+}
+
+/* Icon buttons when active - make icons WHITE on purple background */
+.bp5-button.bp5-active .bp5-icon,
+.bp4-button.bp4-active .bp4-icon,
+.bp3-button.bp3-active .bp3-icon,
+.bp5-button.bp5-active svg,
+.bp4-button.bp4-active svg,
+.bp3-button.bp3-active svg,
+.bp5-button[aria-pressed="true"] svg,
+.bp4-button[aria-pressed="true"] svg,
+.bp5-button.bp5-active svg path,
+.bp4-button.bp4-active svg path,
+.bp5-button[aria-pressed="true"] svg path,
+.bp4-button[aria-pressed="true"] svg path {
+  color: white !important;
+  fill: white !important;
+  stroke: white !important;
+}
+
+/* Ensure all SVG elements inside active buttons are white */
+.bp5-button.bp5-active svg *,
+.bp4-button.bp4-active svg *,
+.bp5-button[aria-pressed="true"] svg *,
+.bp4-button[aria-pressed="true"] svg * {
+  fill: white !important;
+  stroke: white !important;
+  color: white !important;
+}
+
+/* Segmented control / toggle buttons */
+.bp5-segmented-control .bp5-button.bp5-active,
+.bp4-segmented-control .bp4-button.bp4-active {
+  background: var(--vip-accent) !important;
+  color: white !important;
+}
+
+/* Radio-style button groups */
+[role="radiogroup"] .bp5-button[aria-checked="true"],
+[role="radiogroup"] .bp4-button[aria-checked="true"] {
+  background: var(--vip-accent) !important;
+  color: white !important;
+}
+
+/* =============================================
+   INFO TOOLTIPS (i) ICONS
+   ============================================= */
+
+/* VIP info icon - small purple circle with "i" */
+.vip-info,
+.ccc-info {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 14px !important;
+  height: 14px !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+  border-radius: 50% !important;
+  background: var(--vip-accent, #6366F1) !important;
+  color: white !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  font-style: normal !important;
+  cursor: help !important;
+  margin-left: 4px !important;
+  margin-right: 4px !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+}
+
+.vip-info:hover,
+.ccc-info:hover {
+  background: var(--vip-accent-hover, #4F46E5) !important;
+  transform: scale(1.1);
+}
+
+/* Custom tooltip - appears to the RIGHT, horizontal layout */
+.vip-info[title],
+.ccc-info[title] {
+  position: relative;
+}
+
+/* Tooltip appears to the right of the icon - HORIZONTAL */
+.vip-info[title]:hover::after,
+.ccc-info[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  padding: 6px 10px;
+  background: var(--vip-text, #1E293B);
+  color: white;
+  font-size: 11px;
+  font-weight: normal;
+  white-space: nowrap;
+  max-width: 280px;
+  border-radius: 4px;
+  z-index: 10000;
+  pointer-events: none;
+  margin-left: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  line-height: 1.3;
+}
+
+/* Arrow pointing left toward the icon */
+.vip-info[title]:hover::before,
+.ccc-info[title]:hover::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: var(--vip-text, #1E293B);
+  z-index: 10001;
+  pointer-events: none;
+  margin-left: -2px;
 }

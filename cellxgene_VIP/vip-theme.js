@@ -38,6 +38,63 @@
   setInterval(fixJsPanelHeader, 500);
 
   // ============================================
+  // COLLAPSED GENE SETS EXPAND BUTTON
+  // ============================================
+  // DISABLED: This feature was causing issues (button showing when it shouldn't)
+  // The right sidebar in cellxgene already has built-in collapse/expand
+
+  // Clean up any leftover buttons from previous code
+  function cleanupOldButtons() {
+    var oldButtons = [
+      'vip-gene-expand-btn',
+      'vip-left-collapse-btn',
+      'vip-right-collapse-btn'
+    ];
+    oldButtons.forEach(function(id) {
+      var btn = targetDoc.getElementById(id);
+      if (btn) btn.remove();
+    });
+  }
+  // Run cleanup once after page loads
+  setTimeout(cleanupOldButtons, 1000);
+
+  // ============================================
+  // TOOL SELECTION HIGHLIGHTING
+  // ============================================
+
+  function highlightSelectedTools() {
+    // Find all tool buttons in the menubar
+    var toolButtons = targetDoc.querySelectorAll(
+      '.bp5-button-group .bp5-button, .bp4-button-group .bp4-button, ' +
+      '[data-testid*="lasso"], [data-testid*="select"], [data-testid*="brush"], ' +
+      '[aria-label*="lasso"], [aria-label*="select"], [aria-label*="brush"]'
+    );
+
+    toolButtons.forEach(function(btn) {
+      // Check if button is active/pressed
+      var isActive = btn.classList.contains('bp5-active') ||
+                     btn.classList.contains('bp4-active') ||
+                     btn.getAttribute('aria-pressed') === 'true' ||
+                     btn.getAttribute('aria-selected') === 'true';
+
+      if (isActive) {
+        btn.style.background = '#6366F1';
+        btn.style.color = 'white';
+        btn.style.boxShadow = '0 0 0 2px #EEF2FF';
+        // Also color the icon
+        var icon = btn.querySelector('svg, .bp5-icon, .bp4-icon');
+        if (icon) {
+          icon.style.color = 'white';
+          icon.style.fill = 'white';
+        }
+      }
+    });
+  }
+
+  // Run periodically to catch tool selection changes
+  setInterval(highlightSelectedTools, 300);
+
+  // ============================================
   // ORGANIZE VIP TABS INTO CATEGORIES
   // ============================================
 
@@ -147,102 +204,16 @@
   // ============================================
   // COLLAPSIBLE SIDEBARS
   // ============================================
+  // DISABLED: These custom collapse buttons were causing issues
+  // (VIP panel disappearing, unexpected behavior)
+  // CellxGene already has built-in collapse for gene panel
 
   function makeLeftSidebarCollapsible() {
-    var leftSidebar = targetDoc.querySelector('[data-testid="category-sidebar"]') ||
-                      targetDoc.querySelector('[class*="leftSidebar"]');
-
-    if (!leftSidebar) {
-      var sidebars = targetDoc.querySelectorAll('[class*="sidebar"], [class*="Sidebar"]');
-      if (sidebars.length > 0) leftSidebar = sidebars[0];
-    }
-
-    if (!leftSidebar || leftSidebar.dataset.vipCollapsible) return;
-    leftSidebar.dataset.vipCollapsible = 'true';
-
-    var collapseBtn = targetDoc.createElement('button');
-    collapseBtn.id = 'vip-left-collapse-btn';
-    collapseBtn.innerHTML = '&#9664;';
-    collapseBtn.title = 'Collapse sidebar';
-    collapseBtn.style.cssText = 'position: absolute; top: 50%; right: -12px; transform: translateY(-50%); ' +
-      'width: 24px; height: 48px; background: #6366F1; color: white; border: none; border-radius: 0 6px 6px 0; ' +
-      'cursor: pointer; z-index: 100; font-size: 12px; display: flex; align-items: center; justify-content: center;';
-
-    leftSidebar.style.position = 'relative';
-    leftSidebar.appendChild(collapseBtn);
-
-    var isCollapsed = false;
-
-    collapseBtn.onclick = function() {
-      isCollapsed = !isCollapsed;
-      if (isCollapsed) {
-        leftSidebar.style.width = '0px';
-        leftSidebar.style.minWidth = '0px';
-        leftSidebar.style.overflow = 'hidden';
-        leftSidebar.style.padding = '0';
-        collapseBtn.innerHTML = '&#9654;';
-        collapseBtn.title = 'Expand sidebar';
-      } else {
-        leftSidebar.style.width = '';
-        leftSidebar.style.minWidth = '';
-        leftSidebar.style.overflow = '';
-        leftSidebar.style.padding = '';
-        collapseBtn.innerHTML = '&#9664;';
-        collapseBtn.title = 'Collapse sidebar';
-      }
-    };
+    // Disabled - was causing issues
   }
 
   function makeRightSidebarCollapsible() {
-    var rightSidebar = targetDoc.querySelector('[data-testid="rightsidebar"]') ||
-                       targetDoc.querySelector('[class*="rightSidebar"]');
-
-    if (!rightSidebar) {
-      var allDivs = targetDoc.querySelectorAll('div');
-      for (var i = 0; i < allDivs.length; i++) {
-        var div = allDivs[i];
-        var text = div.textContent || '';
-        if (text.indexOf('Gene Sets') !== -1 && text.indexOf('Genes') !== -1 && div.offsetWidth < 400) {
-          rightSidebar = div;
-          break;
-        }
-      }
-    }
-
-    if (!rightSidebar || rightSidebar.dataset.vipCollapsible) return;
-    rightSidebar.dataset.vipCollapsible = 'true';
-
-    var collapseBtn = targetDoc.createElement('button');
-    collapseBtn.id = 'vip-right-collapse-btn';
-    collapseBtn.innerHTML = '&#9654;';
-    collapseBtn.title = 'Collapse sidebar';
-    collapseBtn.style.cssText = 'position: absolute; top: 50%; left: -12px; transform: translateY(-50%); ' +
-      'width: 24px; height: 48px; background: #6366F1; color: white; border: none; border-radius: 6px 0 0 6px; ' +
-      'cursor: pointer; z-index: 100; font-size: 12px; display: flex; align-items: center; justify-content: center;';
-
-    rightSidebar.style.position = 'relative';
-    rightSidebar.appendChild(collapseBtn);
-
-    var isCollapsed = false;
-
-    collapseBtn.onclick = function() {
-      isCollapsed = !isCollapsed;
-      if (isCollapsed) {
-        rightSidebar.style.width = '0px';
-        rightSidebar.style.minWidth = '0px';
-        rightSidebar.style.overflow = 'hidden';
-        rightSidebar.style.padding = '0';
-        collapseBtn.innerHTML = '&#9664;';
-        collapseBtn.title = 'Expand sidebar';
-      } else {
-        rightSidebar.style.width = '';
-        rightSidebar.style.minWidth = '';
-        rightSidebar.style.overflow = '';
-        rightSidebar.style.padding = '';
-        collapseBtn.innerHTML = '&#9654;';
-        collapseBtn.title = 'Collapse sidebar';
-      }
-    };
+    // Disabled - was causing issues
   }
 
   // ============================================
@@ -491,6 +462,137 @@
     window.parent.VIPTutorial = VIPTutorial;
   }
   window.VIPTutorial = VIPTutorial;
+
+  // ============================================
+  // INFO TOOLTIPS FOR VIP SETTINGS
+  // ============================================
+
+  // Define all settings that need info tooltips
+  // Key: text to match (label content), Value: tooltip explanation
+  var VIP_SETTING_TOOLTIPS = {
+    // === Violin Plot Settings ===
+    'Choose cell selection': 'Select which cell populations to include. Use lasso tool on the main plot to define selections.',
+    'Choose a gene': 'Select a gene to visualize. Add genes first using the "Add Genes" tab.',
+    'Expression cutoff for cell filtering': 'Cells with expression below this value are excluded from the plot.',
+    'Dot size for cells': 'Controls the size of individual data points in the violin plot.',
+    'Group by': 'Categorical annotation to split the data by (e.g., cell type, cluster).',
+    'Sub-group by': 'Secondary grouping within each main group for comparison.',
+
+    // === Heatmap Settings ===
+    'Choose genes': 'Select genes to display in the heatmap. Add genes first using "Add Genes".',
+    'Choose categorical annotation': 'Metadata columns (like cell type) to display as color bars.',
+    'Choose continuous annotation': 'Numeric metadata to display as a continuous color gradient.',
+    'Select plotting value': 'Expression: raw values. Z-score: normalized to mean=0, sd=1 per gene.',
+    'Color': 'Color palette for the heatmap. Sequential for expression, diverging for z-scores.',
+    'Reverse': 'Flip the color scale direction.',
+    'Select plotting methods': 'ComplexHeatmap (R): More customization. Seaborn: Faster, simpler.',
+    'Gene as': 'Whether genes appear as rows or columns in the heatmap.',
+    'Width': 'Figure width in inches.',
+    'Height': 'Figure height in inches.',
+    'Annotation fontsize adjust': 'Fine-tune annotation text size (-10 to +10).',
+    'Cluster by': 'Annotation: order by metadata. Expression: hierarchical clustering.',
+    'Max legend row': 'Limit legend rows when genes are displayed as rows.',
+
+    // === Dot Plot Settings ===
+    'Expression cutoff for cell fraction': 'Minimum expression for a cell to count as "expressing" (affects dot size).',
+    'Expression is averaged only over cells expressing': 'Yes: mean of expressing cells only. No: mean of all cells.',
+    'Adjust the legend width': 'Control the width of the legend area.',
+
+    // === Gene Sets Settings ===
+    'Collapsing the above gene sets': 'Combine gene set scores into a single value per cell.',
+    'By': 'Average: mean expression. Median: middle value (robust to outliers).',
+
+    // === Embedding Plot Settings ===
+    'Choose an embedding': 'Dimensionality reduction to visualize (UMAP, t-SNE, PCA, etc.).',
+    'Color by': 'What to color points by: gene expression or metadata.',
+
+    // === Density Plot Settings ===
+    'Kernel bandwidth': 'Smoothing factor. Higher = smoother curves.',
+
+    // === Track Plot Settings ===
+    'Track height': 'Height of each gene track in the plot.',
+
+    // === Sankey Diagram Settings ===
+    'Source annotation': 'Left side of the flow diagram.',
+    'Target annotation': 'Right side of the flow diagram.',
+
+    // === DEG Settings ===
+    'Test method': 'Statistical test for differential expression. Wilcoxon: non-parametric. t-test: parametric.',
+    'Correction method': 'Multiple testing correction. Benjamini-Hochberg controls false discovery rate.',
+    'Log2 fold change cutoff': 'Minimum expression difference to consider significant.',
+    'Adjusted p-value cutoff': 'Maximum adjusted p-value for significance.',
+
+    // === Spatial Settings ===
+    'Spot size': 'Size of spatial spots in the visualization.',
+    'Alpha': 'Transparency of spots (0=invisible, 1=opaque).',
+
+    // === Global Settings ===
+    'Figure DPI': 'Image resolution. Higher = larger file, sharper image.',
+    'Font size': 'Base text size for all plot labels.',
+    'Figure format': 'Output format: PNG (raster), SVG (vector), PDF (print).',
+
+    // === Add Genes Settings ===
+    'Case sensitive': 'Whether gene name matching is case-sensitive.',
+    'Regex': 'Enable regular expression pattern matching for gene names.',
+    'Exact match': 'Only match complete gene names, not partial matches.'
+  };
+
+  function injectInfoTooltips() {
+    // Get the VIP panel content
+    var vipPanel = targetDoc.querySelector('.jsPanel-content');
+    if (!vipPanel) return;
+
+    // Also check current document if we're inside VIP
+    var doc = vipPanel || document;
+
+    // Find all paragraphs and labels that might contain settings
+    var elements = doc.querySelectorAll('p, label, span');
+
+    elements.forEach(function(el) {
+      // Skip if already has tooltip
+      if (el.querySelector('.vip-info')) return;
+      if (el.classList.contains('vip-info')) return;
+
+      var text = el.textContent || '';
+
+      // Check each tooltip definition
+      Object.keys(VIP_SETTING_TOOLTIPS).forEach(function(key) {
+        // Match if the element text starts with or contains the key
+        if (text.indexOf(key) !== -1 && text.indexOf(key) < 50) {
+          // Don't add to elements that are mostly input/select
+          var inputs = el.querySelectorAll('input, select');
+          var isInputContainer = inputs.length > 0 && el.textContent.trim().length < key.length + 20;
+
+          // Find the text node or create a place for the tooltip
+          var firstChild = el.firstChild;
+          if (firstChild && firstChild.nodeType === Node.TEXT_NODE) {
+            // Insert after the label text but before inputs
+            var info = targetDoc.createElement('span');
+            info.className = 'vip-info';
+            info.textContent = 'i';
+            info.title = VIP_SETTING_TOOLTIPS[key];
+            info.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;' +
+              'width:14px;height:14px;border-radius:50%;background:#6366F1;color:white;' +
+              'font-size:10px;font-weight:bold;cursor:help;margin-left:4px;font-style:normal;' +
+              'vertical-align:middle;';
+
+            // Insert after the text content
+            if (el.querySelector('select, input')) {
+              // Insert before the first input/select
+              var firstInput = el.querySelector('select, input');
+              el.insertBefore(info, firstInput);
+            } else {
+              // Append at end
+              el.appendChild(info);
+            }
+          }
+        }
+      });
+    });
+  }
+
+  // Run periodically to catch dynamically loaded content
+  setInterval(injectInfoTooltips, 2000);
 
   // ============================================
   // INITIALIZE

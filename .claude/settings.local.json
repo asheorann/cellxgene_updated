@@ -26,7 +26,14 @@
       "Skill(frontend-design)",
       "Bash(dir C:Usersanushprojects /b)",
       "Bash(test:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(cmd /c \"conda activate VIP && pip list\")",
+      "Bash(C:Usersanushanaconda3envsVIPpython.exe -m pip list)",
+      "Bash(powershell.exe -Command \"conda activate VIP; pip list\")",
+      "Bash(powershell.exe -Command \"conda info --envs\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\anush'' -Directory | Where-Object { $_Name -like ''*conda*'' -or $_Name -like ''*anaconda*'' }\")",
+      "Bash(powershell.exe:*)",
+      "Bash(grep:*)"
     ]
   }
 }

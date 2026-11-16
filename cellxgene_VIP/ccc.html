@@ -1,16 +1,37 @@
 <!-- CCC tab content. Loaded by ccc.js into the VIP panel; see CHANGES_FROM_UPSTREAM.md -->
+<style>
+  .ccc-info {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #6366F1;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: help;
+    margin-left: 4px;
+    font-style: normal;
+  }
+  .ccc-info:hover {
+    background: #4F46E5;
+  }
+</style>
 <div id="CCC" class="tabcontent">
   <h3>Cell-Cell Communication Analysis</h3>
   <div id="CCCinput">
     <!-- Mode Toggle -->
     <p><b>Mode:</b>
+      <span class="ccc-info" title="Targeted: Analyze communication between specific cell types you choose. Untargeted: Discover all cell-cell interactions in your data.">i</span>
       <label style="margin-left:10px;"><input type="radio" name="CCCmode" value="targeted" checked/> Targeted</label>
       <label style="margin-left:10px;"><input type="radio" name="CCCmode" value="untargeted"/> Untargeted</label>
-      <small style="color:#666; margin-left:10px;">(Targeted: specific sender→receiver | Untargeted: all interactions)</small>
     </p>
 
     <!-- Cells to Include -->
     <p id="CCCcellsRow"><b>Cells to include:</b>
+      <span class="ccc-info" title="Choose which cells to analyze: all cells, or only cells you've selected using the lasso tool.">i</span>
       <select id="CCCcells" style="min-width:150px;">
         <option value="all">All cells</option>
         <option value="celllist1">Selection 1 (<span class="cellN1">0</span>)</option>
@@ -20,21 +41,25 @@
 
     <!-- Cell Type Annotation (groupby) -->
     <p id="CCCgroupbyRow"><b>Cell type annotation:</b>
+      <span class="ccc-info" title="The metadata column that defines cell types (e.g., 'cell_type', 'cluster'). CCC analyzes communication between these groups.">i</span>
       <select id="CCCgroupby" onchange="CCCupdateSenderReceiver()"></select>
     </p>
 
     <!-- Sender/Receiver (shown only in targeted mode) -->
     <div id="CCCtargetedOptions">
       <p><b>Define sender/receiver by:</b>
+        <span class="ccc-info" title="Annotation: Use cell type labels. Lasso: Use your custom lasso selections from the plot.">i</span>
         <label style="margin-left:10px;"><input type="radio" name="CCCsrcSource" value="annotation" checked/> Cell type annotation</label>
         <label style="margin-left:10px;"><input type="radio" name="CCCsrcSource" value="lasso"/> Lasso selections</label>
       </p>
       <div id="CCCannotationSR">
         <p><b>Sender:</b>
+          <span class="ccc-info" title="The cell type that expresses ligands (sends signals).">i</span>
           <select id="CCCsender" style="min-width:150px;"></select>
           <button type="button" onclick="CCCswapSR()" title="Swap sender and receiver">&#8645; Swap</button>
         </p>
         <p><b>Receiver:</b>
+          <span class="ccc-info" title="The cell type that expresses receptors (receives signals).">i</span>
           <select id="CCCreceiver" style="min-width:150px;"></select>
         </p>
       </div>
@@ -56,6 +81,7 @@
 
     <!-- Compare two conditions (optional) -->
     <p><b>Compare conditions by:</b>
+      <span class="ccc-info" title="Compare CCC between two conditions (e.g., healthy vs disease). Select the metadata column that defines conditions.">i</span>
       <select id="CCCcompareBy" onchange="CCCupdateCompare()">
         <option value="">None (single condition)</option>
       </select>
@@ -82,6 +108,7 @@
 
     <!-- Top N Results -->
     <p><b>Top N results:</b>
+      <span class="ccc-info" title="Number of top ligand-receptor pairs to display in the results.">i</span>
       <input type="range" id="CCCtopN" min="10" max="100" step="10" value="20" style="width:150px;" oninput="$('#CCCtopNval').text(this.value)"/>
       <span id="CCCtopNval">20</span>
     </p>
@@ -91,6 +118,7 @@
       <summary style="cursor:pointer; font-weight:bold;">Advanced Options</summary>
       <div style="margin-top:10px; padding-left:10px;">
         <p><b>CCC Method:</b>
+          <span class="ccc-info" title="CellPhoneDB: Fast, single method. Rank Aggregate: Slower but combines multiple methods for consensus.">i</span>
           <select id="CCCmethod">
             <option value="cellphonedb" selected>CellPhoneDB (fast)</option>
             <option value="rank_aggregate">Rank Aggregate (slower, consensus of methods)</option>
@@ -101,6 +129,7 @@
           </select>
         </p>
         <p><b>Resource (L-R database):</b>
+          <span class="ccc-info" title="Ligand-receptor database. Use Mouse Consensus for mouse data, others are human-focused.">i</span>
           <select id="CCCresource">
             <option value="auto" selected>Auto (detect mouse/human)</option>
             <option value="mouseconsensus">Mouse Consensus</option>
@@ -111,21 +140,23 @@
           </select>
         </p>
         <p><b>Min cells per group:</b>
+          <span class="ccc-info" title="Cell types with fewer cells than this are excluded from analysis.">i</span>
           <input type="number" id="CCCminCells" value="20" min="5" max="100" style="width:60px;"/>
         </p>
-        <p><b>Min cells per replicate (comparison):</b>
+        <p><b>Min cells per replicate:</b>
+          <span class="ccc-info" title="For comparison view: minimum cells a replicate (mouse) needs to be included.">i</span>
           <input type="number" id="CCCminCellsSample" value="30" min="5" max="500" style="width:60px;" onchange="CCCupdatePreview()"/>
-          <small style="color:#666;">a mouse counts only with this many cells of both sender and target</small>
         </p>
         <p><b>Permutations:</b>
+          <span class="ccc-info" title="0 = fast (no p-values). 100-1000 = slower but gives statistical significance.">i</span>
           <input type="number" id="CCCnPerms" value="0" min="0" max="10000" step="100" style="width:80px;"/>
-          <small style="color:#666;">0 = skip (fast), 100-1000 for p-values</small>
         </p>
         <p><b>Max cells per type:</b>
+          <span class="ccc-info" title="Large cell types are subsampled to this many cells for faster analysis.">i</span>
           <input type="number" id="CCCmaxCellsPerType" value="500" min="50" max="5000" step="50" style="width:80px;"/>
-          <small style="color:#666;">subsample large cell types for speed</small>
         </p>
         <p><b>Sort results by:</b>
+          <span class="ccc-info" title="Magnitude: expression strength. Specificity: unique to this pair. P-value: statistical significance.">i</span>
           <select id="CCCsortBy">
             <option value="magnitude" selected>Magnitude</option>
             <option value="specificity">Specificity</option>
@@ -152,6 +183,48 @@
     <div id="CCCtableContainer" style="margin-bottom:15px; max-height:400px; overflow-y:auto;">
       <table id="CCCtable" class="display" style="width:100%; font-size:12px;"></table>
     </div>
+
+    <!-- Visualization Controls (shown after results) -->
+    <div id="CCCvisControls" style="display:none; background:#f8f9fa; padding:12px; border-radius:6px; margin-bottom:15px;">
+      <div style="display:flex; flex-wrap:wrap; gap:15px; align-items:center;">
+        <div>
+          <label style="font-size:11px; font-weight:600; color:#666; display:block; margin-bottom:4px;">PLOT TYPE</label>
+          <select id="CCCvisType" style="min-width:120px;" onchange="CCCupdateVis()">
+            <option value="dotplot" selected>Dot Plot</option>
+            <option value="heatmap">Heatmap</option>
+            <option value="chord" disabled>Chord (coming soon)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px; font-weight:600; color:#666; display:block; margin-bottom:4px;">FILTER SOURCE</label>
+          <select id="CCCfilterSource" style="min-width:100px;" onchange="CCCupdateVis()">
+            <option value="">All sources</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px; font-weight:600; color:#666; display:block; margin-bottom:4px;">FILTER TARGET</label>
+          <select id="CCCfilterTarget" style="min-width:100px;" onchange="CCCupdateVis()">
+            <option value="">All targets</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px; font-weight:600; color:#666; display:block; margin-bottom:4px;">SHOW TOP</label>
+          <select id="CCCvisTopN" style="min-width:70px;" onchange="CCCupdateVis()">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="30">30</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <div style="margin-left:auto;">
+          <button onclick="CCCdownloadFig()" style="background:#6366F1; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600;">
+            ⬇ Download Plot
+          </button>
+        </div>
+      </div>
+    </div>
+
     <p id="CCCfig"><i>Configure options above and click "Run Analysis"</i></p>
   </div>
 </div><!--CCC-->
