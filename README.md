@@ -29,7 +29,7 @@ Developed for the **GutPath scRNA-seq atlas** at Penn Vet.
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/cellxgene_updated.git
+git clone https://github.com/asheorann/cellxgene_updated.git
 cd cellxgene_updated
 
 # Build the container (takes 30-60 minutes)
